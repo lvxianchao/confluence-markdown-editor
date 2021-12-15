@@ -19,6 +19,13 @@ $(function () {
         upload: {
             url: `${config.api}/rest/api/content/${contentId}/child/attachment`,
             filedName: 'file',
+            filename(name) {
+                console.log(name);
+                return name
+                    .replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, "")
+                    .replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, "")
+                    .replace("/\\s/g", "");
+            },
             headers: {
                 'Authorization': 'Bearer ' + config.token,
                 'X-Atlassian-Token': 'nocheck',
@@ -34,12 +41,10 @@ $(function () {
     window.addEventListener('message', function (e) {
         try {
             if (e.origin !== config.host) {
-                console.log('fuck origin', e.origin, config.host);
                 return false;
             }
 
             const params = JSON.parse(e.data);
-            console.log(e.data);
 
             if (!params.id || params.id !== 'chrome-extension-confluence-markdown-editor') {
                 return false;
@@ -242,7 +247,8 @@ function uploadAttachment(config, file) {
     reader.onload = (ev) => {
         let url = config.api + `/rest/api/content/${config.contentId}/child/attachment`;
         let fileBase64 = ev.target.result;
-        let filename = file.name;
+        let filenames = file.name.split('.');
+        let filename = filenames[0] + '-' + Math.floor(Math.random() * 100000) + '.' + filenames[1];
 
         window.opener.postMessage(message('uploadAttachment', config, {
             url,

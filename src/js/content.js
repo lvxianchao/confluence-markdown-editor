@@ -21,20 +21,14 @@ import axios from "axios";
                     axios.get(params.config.api + `/rest/api/content/${params.data.contentId}`, {
                         params: {
                             expand: 'body.storage,version',
-                        },
-                        headers: {
-                            Authorization: 'Bearer ' + params.config.token,
-                        },
+                        }
                     }).then(res => {
                         e.source.postMessage(message('getContentDetail', params.config, res.data), '*');
                     });
                     break;
                 case 'updateContent':
-                    axios.put(params.config.api + `/rest/api/content/${params.data.contentId}`, params.data.body, {
-                        headers: {
-                            Authorization: 'Bearer ' + params.config.token,
-                        }
-                    }).then(res => {
+                    axios.put(params.config.api + `/rest/api/content/${params.data.contentId}`, params.data.body)
+                        .then(res => {
                         console.log(res)
                         e.source.postMessage(message('updateContent', params.config, res), '*');
 
@@ -51,7 +45,6 @@ import axios from "axios";
                     axios.post(params.data.url, formdata, {
                         headers: {
                             'X-Atlassian-Token': 'nocheck',
-                            'Authorization': `Bearer ${params.config.token}`,
                         },
                     }).then(res => {
                         res.data.results[0].fileBase64 = params.data.fileBase64;
