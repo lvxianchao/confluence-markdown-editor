@@ -2,7 +2,7 @@
 
 > A Chrome extension that provides a markdown editor for Confluence.
 
-**Confluence Markdown Editor** 是一个 Chrome 浏览器的扩展，为 Confluence Wiki 页面提供一个 Markdown 编辑器。
+[Confluence Markdown Editor](https://github.com/lvxianchao/confluence-markdown-editor) 是一个 Chrome 浏览器的扩展，为 Confluence Wiki 页面提供一个 Markdown 编辑器。
 
 ## FBI Warning
 
@@ -62,4 +62,4 @@ npm install && npx mix watch
 
 两种方式：
 1. 以开发者方式执行相关命令后，会在项目目录里生成 `dist` 文件夹，打开 Chrome 扩展的开发者模式，加载这个文件夹。
-2. 在 Release 页面直接下载 `.crx`，拖放到浏览器里安装。
+2. 在 Release 页面直接下载 `.crx`，把后缀改名为 `.zip` 解压后拖放到浏览器里安装。
