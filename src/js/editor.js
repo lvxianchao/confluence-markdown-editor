@@ -8,7 +8,7 @@ $(function () {
     let config = params.get('config');
 
     if (!config || !contentId) {
-        return layui.layer.msg('Error: Parameter missing.', {icon: 5, time: 2000});
+        return layui.layer.msg('错误: 参数丢失', {icon: 5, time: 2000});
     }
 
     config = JSON.parse(config);
@@ -19,15 +19,7 @@ $(function () {
         upload: {
             url: `${config.api}/rest/api/content/${contentId}/child/attachment`,
             filedName: 'file',
-            filename(name) {
-                console.log(name);
-                return name
-                    .replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, "")
-                    .replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, "")
-                    .replace("/\\s/g", "");
-            },
             headers: {
-                'Authorization': 'Bearer ' + config.token,
                 'X-Atlassian-Token': 'nocheck',
             },
             handler: function (files) {
@@ -66,7 +58,7 @@ $(function () {
                         return layui.layer.msg(params.data.data.message, {icon: 5});
                     }
 
-                    layui.layer.msg('Succeeded.', {icon: 6});
+                    layui.layer.msg('保存成功', {icon: 6});
                     version.val(params.data.data.version.number + 1);
                     break;
                 case 'uploadAttachment':
@@ -84,7 +76,7 @@ $(function () {
                     break;
             }
         } catch (e) {
-            layui.layer.msg('Something was wrong.', {icon: 5});
+            layui.layer.msg('未知错误', {icon: 5});
             console.log(e);
         }
     });
