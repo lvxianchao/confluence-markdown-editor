@@ -12,9 +12,6 @@ $(function () {
                 <input type="text" class="layui-input" name="apis[]" lay-verify="required|url">
             </td>
             <td>
-                <input type="text" class="layui-input" name="tokens[]" lay-verify="required">
-            </td>
-            <td>
                 <div class="layui-btn layui-btn-danger w-100 delete-btn">删除</div>
             </td>
         </tr>
@@ -43,7 +40,6 @@ $(function () {
 
                 clone.find('input').eq(0).val(config.host);
                 clone.find('input').eq(1).val(config.api);
-                clone.find('input').eq(2).val(config.token);
 
                 $('tbody').append(clone);
             });
@@ -58,7 +54,6 @@ $(function () {
             config.push({
                 host: $(this).find('input:eq(0)').val(),
                 api: $(this).find('input:eq(1)').val(),
-                token: $(this).find('input:eq(2)').val(),
             });
         });
 
