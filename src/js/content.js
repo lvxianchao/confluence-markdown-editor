@@ -7,8 +7,6 @@ import axios from "axios";
         try {
             const params = JSON.parse(e.data);
 
-            console.log(params);
-
             if (!params.config.host || params.config.host !== host) {
                 return false
             }
@@ -37,7 +35,29 @@ import axios from "axios";
                             Authorization: 'Bearer ' + params.config.token,
                         }
                     }).then(res => {
-                        e.source.postMessage(message('updateContent', params.config, res.data), '*');
+                        console.log(res)
+                        e.source.postMessage(message('updateContent', params.config, res), '*');
+
+                    }).catch(error => {
+                        console.log(error);
+                        e.source.postMessage(message('updateContent', params.config, error.response), '*');
+                    });
+                    break;
+                case 'uploadAttachment':
+                    let formdata = new FormData();
+                    let file = base64ToFile(params.data.filename, params.data.fileBase64)
+                    formdata.append('file', file);
+
+                    axios.post(params.data.url, formdata, {
+                        headers: {
+                            'X-Atlassian-Token': 'nocheck',
+                            'Authorization': `Bearer ${params.config.token}`,
+                        },
+                    }).then(res => {
+                        res.data.results[0].fileBase64 = params.data.fileBase64;
+                        e.source.postMessage(message('uploadAttachment', params.config, res), '*');
+                    }).catch(error => {
+                        e.source.postMessage(message('uploadAttachment', params.config, error.response), '*');
                     });
                     break;
                 default:
@@ -95,7 +115,7 @@ function createMarkdownEditorButton(config) {
 
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector('#kkjofhv-confluence-markdown-editor');
-    button.addEventListener('click', function (e) {
+    button.addEventListener('click', function () {
         window.open(extensionEditorPageUrl);
     }, false);
 
@@ -108,8 +128,37 @@ function createMarkdownEditorButton(config) {
  * @param event 事件名称
  * @param config 当前域名配置信息
  * @param data 发送的数据
- * @returns {string}
+ *
+ * @returns {{data: null, id: string, event, config}}
  */
-function message(event, config, data = null) {
-    return JSON.stringify({id: "chrome-extension-confluence-markdown-editor", event, config, data,});
+function message(event, config, data) {
+    console.log('message', data);
+    return JSON.stringify({
+        id: "chrome-extension-confluence-markdown-editor",
+        event,
+        config,
+        data
+    });
+}
+
+/**
+ * base64 转文件对象
+ *
+ * @param filename 文件名称
+ * @param urlData base64
+ *
+ * @returns {File}
+ */
+function base64ToFile(filename, urlData) {
+    let arr = urlData.split(',')
+    let type = arr[0].match(/:(.*?);/)[1]
+    let bstr = atob(arr[1])
+    let n = bstr.length
+    let u8arr = new Uint8Array(n)
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, {type});
 }
