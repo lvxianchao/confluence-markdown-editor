@@ -25,20 +25,69 @@
 
 <div class="layui-container pt-3">
     <form action="" class="layui-form layui-form-pane" autocomplete="off" lay-filter="config">
-        <table class="layui-table" id="config-table">
-            <thead>
-            <tr>
-                <th>Host</th>
-                <th>API</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <fieldset class="layui-elem-field">
+            <legend>作用域</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="config-table">
+                    <thead>
+                    <tr>
+                        <th>Host</th>
+                        <th>API</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="layui-form-item button-container d-flex justify-content-center">
+                    <div class="layui-btn w-100 create-btn">添加</div>
+                </div>
+            </div>
+        </fieldset>
 
-        <div class="layui-form-item button-container d-flex justify-content-center">
-            <div class="layui-btn w-100 create-btn">添加</div>
-        </div>
+        <fieldset class="layui-elem-field">
+            <legend>附件</legend>
+            <div class="layui-field-box">
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">显示方式</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="attachment_show_type" value="link" title="作为链接显示" checked>
+                        <input type="radio" name="attachment_show_type" value="thumbnail" title="作为缩略图显示">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label" for="attachment_container_enable">使用容器</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" id="attachment_container_enable" name="attachment_container_enable"
+                               lay-skin="switch" lay-text="ON|OFF" lay-filter="attachment_container_enable" checked>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">容器类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="attachment_container_type" value="tip" title="提示" checked>
+                        <input type="radio" name="attachment_container_type" value="info" title="信息">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label" for="attachment_container_icon">容器图标</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" id="attachment_container_icon" name="attachment_container_icon" lay-skin="switch"
+                               lay-text="ON|OFF" checked>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="attachment_container_title">容器标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="attachment_container_title" name="attachment_container_title"
+                               class="layui-input" value="附件">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
 
         <div class="layui-form-item button-container d-flex justify-content-center">
             <button class="layui-btn layui-btn-normal w-25" lay-submit>保存</button>

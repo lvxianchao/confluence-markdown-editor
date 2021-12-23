@@ -92,12 +92,15 @@ $(function () {
             let confluenceImageHTML = '';
             let src = $(this).attr('src');
             let alt = $(this).attr('alt');
-            if (src.startsWith('http') || src.startsWith('https')) { // 网络图片
+            if (src.startsWith('http') || src.startsWith('https')) {
+                // 网络图片
                 confluenceImageHTML = convertImgToConfluenceHTML(src, '', true);
             } else if (src.startsWith('data:image/')) {
-                if (src === fileIconBase64()) { // 本地上传文件
+                if (src === fileIconBase64()) {
+                    // 本地上传文件
                     confluenceImageHTML = convertFileToConfluenceHTML(alt);
-                } else { // 本地上传图片
+                } else {
+                    // 本地上传图片
                     confluenceImageHTML = convertImgToConfluenceHTML(src, alt, false);
                 }
             }
