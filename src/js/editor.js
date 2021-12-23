@@ -84,7 +84,7 @@ $(function () {
     // 保存
     $('#save').on('click', function () {
         let html = window.vditor.getHTML();
-        let dom = $(`<div>${html}</div>`);
+        let dom = $(`<div><div class="confluence-markdown-editor-content">${html}</div></div>`);
 
         // 处理图片
         dom.find('img').each(function () {
@@ -117,6 +117,8 @@ $(function () {
         html = dom.html();
         html = html.replace('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
         html = html.replace(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
+
+        console.log(html);
 
         const body = {
             version: {
