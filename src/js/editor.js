@@ -6,12 +6,14 @@ $(function () {
     const params = new URLSearchParams(location.search);
     const contentId = params.get('page_id');
     let config = params.get('config');
+    let attachmentConfig = params.get('attachment');
 
-    if (!config || !contentId) {
+    if (!config || !contentId || !attachmentConfig) {
         return layui.layer.msg('错误: 参数丢失', {icon: 5, time: 2000});
     }
 
     config = JSON.parse(config);
+    attachmentConfig = JSON.parse(attachmentConfig);
 
     window.vditor = new Vditor('vditor', {
         cdn: '../lib/vditor',
@@ -98,7 +100,7 @@ $(function () {
             } else if (src.startsWith('data:image/')) {
                 if (src === fileIconBase64()) {
                     // 本地上传文件
-                    confluenceImageHTML = convertFileToConfluenceHTML(alt);
+                    confluenceImageHTML = convertFileToConfluenceHTML(alt, attachmentConfig);
                 } else {
                     // 本地上传图片
                     confluenceImageHTML = convertImgToConfluenceHTML(src, alt, false);
@@ -111,15 +113,23 @@ $(function () {
         // 处理代码块
         dom.find('code').each(function () {
             if ($(this).parent().prop('tagName') === 'PRE') {
-                let language = $(this).attr('class').replace('language-', '');
+                let language = '';
+                if ($(this).attr('class')) {
+                    language = $(this).attr('class').replace('language-', '');
+                }
                 let code = $(this).text();
                 $(this).parent().replaceWith(convertCodeToConfluenceHTML(language, code));
             }
         });
-
         html = dom.html();
-        html = html.replace('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
-        html = html.replace(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
+        html = html.replaceAll('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
+        html = html.replaceAll(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
+
+        // 处理水平线
+        html = html.replaceAll('<hr>', '<hr/>');
+
+        // 处理换行标签
+        html = html.replaceAll('<br>', '<br/>');
 
         console.log(html);
 
@@ -192,14 +202,16 @@ function message(event, config, data = null) {
  * @returns {string}
  */
 function convertCodeToConfluenceHTML(language, code) {
-    return `<ac:structured-macro ac:macro-id="${uuid()}" ac:name="code" ac:schema-version="1">
-                <ac:parameter ac:name="language">${language}</ac:parameter>
-                <ac:parameter ac:name="theme">RDark</ac:parameter>
-                <ac:parameter ac:name="borderStyle">solid</ac:parameter>
-                <ac:parameter ac:name="linenumbers">true</ac:parameter>
-                <ac:parameter ac:name="collapse">false</ac:parameter>
-                <ac:plain-text-body><![CDATA[${code}]]></ac:plain-text-body>
-            </ac:structured-macro>`;
+    return `
+        <ac:structured-macro ac:macro-id="${uuid()}" ac:name="code" ac:schema-version="1">
+            <ac:parameter ac:name="language">${language}</ac:parameter>
+            <ac:parameter ac:name="theme">RDark</ac:parameter>
+            <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+            <ac:parameter ac:name="linenumbers">true</ac:parameter>
+            <ac:parameter ac:name="collapse">false</ac:parameter>
+            <ac:plain-text-body><![CDATA[${code}]]></ac:plain-text-body>
+        </ac:structured-macro>
+    `;
 }
 
 /**
@@ -220,16 +232,41 @@ function convertImgToConfluenceHTML(src, alt, isImageUrl) {
  * 转换文件
  *
  * @param alt 文件名称
+ * @param attachmentConfig
  * @returns {string}
  */
-function convertFileToConfluenceHTML(alt) {
-    return `
-        <ac:structured-macro ac:macro-id="${uuid()}" ac:name="view-file" ac:schema-version="1">
-            <ac:parameter ac:name="name">
+function convertFileToConfluenceHTML(alt, attachmentConfig) {
+    let attachment = '';
+
+    // 根据配置定义基本的附件 DOM。
+    if (attachmentConfig.type === 'thumbnail') {
+        attachment = `
+            <ac:structured-macro ac:macro-id="${uuid()}" ac:name="view-file" ac:schema-version="1">
+                <ac:parameter ac:name="name">
+                    <ri:attachment ri:filename="${alt}"/>
+                </ac:parameter>
+            </ac:structured-macro>
+        `;
+    } else if (attachmentConfig.type === 'link') {
+        attachment = `
+            <ac:link>
                 <ri:attachment ri:filename="${alt}"/>
-            </ac:parameter>
-        </ac:structured-macro>
-    `;
+            </ac:link>
+        `;
+    }
+
+    // 如果使用容器，需要将附件 DOM 置入到容器 DOM 内。
+    if (attachmentConfig.container.enable) {
+        attachment = `
+            <ac:structured-macro ac:macro-id="${uuid()}" ac:name="${attachmentConfig.container.type}" ac:schema-version="1">
+              <ac:parameter ac:name="icon">${attachmentConfig.container.enable}</ac:parameter>
+              <ac:parameter ac:name="title">${attachmentConfig.container.title}</ac:parameter>
+              <ac:rich-text-body><p>${attachment}</p></ac:rich-text-body>
+            </ac:structured-macro>
+        `;
+    }
+
+    return attachment;
 }
 
 /**

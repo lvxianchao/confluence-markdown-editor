@@ -29,10 +29,10 @@ import axios from "axios";
                 case 'updateContent':
                     axios.put(params.config.api + `/rest/api/content/${params.data.contentId}`, params.data.body)
                         .then(res => {
-                        console.log(res)
-                        e.source.postMessage(message('updateContent', params.config, res), '*');
+                            console.log(res)
+                            e.source.postMessage(message('updateContent', params.config, res), '*');
 
-                    }).catch(error => {
+                        }).catch(error => {
                         console.log(error);
                         e.source.postMessage(message('updateContent', params.config, error.response), '*');
                     });
@@ -62,16 +62,18 @@ import axios from "axios";
     }, false);
 
     // 如果当前域名在配置里，则注入编辑器按钮
-    chrome.storage.sync.get(['config'], (result) => {
+    chrome.storage.sync.get(['config', 'attachment'], (result) => {
         if (!result.config) {
             return false;
         }
 
+        let attachment = result.attachment;
+
         let hasCreatedButton = false;
-        result.config.forEach(function (config) {
+        result.config.forEach(config => {
             if (!hasCreatedButton) {
                 if (config.host === host) {
-                    hasCreatedButton = createMarkdownEditorButton(config);
+                    hasCreatedButton = createMarkdownEditorButton({config, attachment});
                 }
             }
         });
@@ -84,7 +86,8 @@ import axios from "axios";
  *
  * @returns {boolean}
  */
-function createMarkdownEditorButton(config) {
+function createMarkdownEditorButton({config, attachment}) {
+    console.log(attachment);
     const meta = document.querySelector('meta[name="ajs-page-id"]');
 
     if (!meta) {
@@ -104,7 +107,9 @@ function createMarkdownEditorButton(config) {
 
     // Markdown 编辑器页面
     let extensionEditorPageUrl = chrome.runtime.getURL('pages/editor.html')
-        + `?page_id=${pageId}&config=` + encodeURIComponent(JSON.stringify(config));
+        + `?page_id=${pageId}&config=` + encodeURIComponent(JSON.stringify(config))
+        + `&attachment=` + encodeURIComponent(JSON.stringify(attachment))
+    ;
 
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector('#kkjofhv-confluence-markdown-editor');
