@@ -20,6 +20,7 @@ const host = `${location.protocol}//${location.hostname}`;
             switch (params.event) {
                 case 'user':
                     axios.get(params.config.api + `/rest/api/user/current`).then(res => {
+                        res.data.avatar = getAvatarBase64();
                         e.source.postMessage(message('user', params.config, res.data), '*');
                     });
                     break;
@@ -85,6 +86,22 @@ const host = `${location.protocol}//${location.hostname}`;
         });
     });
 })();
+
+/**
+ * 将头像转换成 base64
+ *
+ * @returns {string}
+ */
+function getAvatarBase64() {
+    let avatar = document.querySelector('.aui-avatar-inner > img');
+    let canvas = document.createElement('canvas');
+    canvas.width = avatar.width;
+    canvas.height = avatar.height;
+    let context = canvas.getContext("2d");
+    context.drawImage(avatar, 0, 0, avatar.width, avatar.height);
+
+    return canvas.toDataURL("image/png");
+}
 
 /**
  * 获取 content id

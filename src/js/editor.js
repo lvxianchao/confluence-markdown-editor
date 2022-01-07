@@ -58,7 +58,7 @@ $(function () {
             switch (params.event) {
                 case 'user':
                     $('#username').text(params.data.username);
-                    $('#avatar').attr('src', config.host + params.data.profilePicture.path);
+                    $('#avatar').attr('src', params.data.avatar);
                     break;
                 case 'getContentDetail':
                     $('#title').val(params.data.title);
