@@ -1,10 +1,16 @@
 import axios from "axios";
 
-(function () {
-    const host = `${location.protocol}//${location.hostname}`;
+const id = 'chrome-extension-confluence-markdown-editor';
+const host = `${location.protocol}//${location.hostname}`;
 
+(function () {
     window.addEventListener('message', function (e) {
         try {
+            if (e.data === 'init') {
+                init(e);
+                return;
+            }
+
             const params = JSON.parse(e.data);
 
             if (!params.config.host || params.config.host !== host) {
@@ -80,6 +86,47 @@ import axios from "axios";
     });
 })();
 
+/**
+ * 获取 content id
+ *
+ * @returns {string|number}
+ */
+function getContentId() {
+    const meta = document.querySelector('meta[name="ajs-page-id"]');
+
+    if (!meta) {
+        return 0;
+    }
+
+    return meta.getAttribute('content');
+}
+
+/**
+ * 编辑器初始化时获取必要的参数和配置信息
+ *
+ * @param e
+ */
+function init(e) {
+    chrome.storage.sync.get(['config', 'attachment'], result => {
+        if (!result.config) {
+            return false;
+        }
+
+        result.config.forEach(config => {
+            if (config.host === host) {
+                let data = {
+                    id: id,
+                    contentId: getContentId(),
+                    config: config,
+                    attachment: result.attachment,
+                };
+
+                e.source.postMessage(data, '*');
+            }
+        });
+    });
+}
+
 
 /**
  * 注入编辑器按钮
@@ -87,7 +134,6 @@ import axios from "axios";
  * @returns {boolean}
  */
 function createMarkdownEditorButton({config, attachment}) {
-    console.log(attachment);
     const meta = document.querySelector('meta[name="ajs-page-id"]');
 
     if (!meta) {
@@ -127,16 +173,11 @@ function createMarkdownEditorButton({config, attachment}) {
  * @param config 当前域名配置信息
  * @param data 发送的数据
  *
- * @returns {{data: null, id: string, event, config}}
+ * @returns {string}
  */
 function message(event, config, data) {
     console.log('message', data);
-    return JSON.stringify({
-        id: "chrome-extension-confluence-markdown-editor",
-        event,
-        config,
-        data
-    });
+    return JSON.stringify({id, event, config, data});
 }
 
 /**

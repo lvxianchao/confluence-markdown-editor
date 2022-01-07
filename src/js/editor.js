@@ -2,7 +2,11 @@ import $ from 'jquery';
 import Vditor from "../lib/vditor/dist/index.min";
 import {v4 as uuid} from 'uuid';
 
+const id = 'chrome-extension-confluence-markdown-editor';
+
 $(function () {
+    // window.opener.postMessage('init', '*');
+
     const params = new URLSearchParams(location.search);
     const contentId = params.get('page_id');
     let config = params.get('config');
@@ -34,13 +38,18 @@ $(function () {
 
     window.addEventListener('message', function (e) {
         try {
+            if (e.data instanceof Object && e.data.id && e.data.id === id) {
+                console.log(e.data);
+                return;
+            }
+
             if (e.origin !== config.host) {
                 return false;
             }
 
             const params = JSON.parse(e.data);
 
-            if (!params.id || params.id !== 'chrome-extension-confluence-markdown-editor') {
+            if (!params.id || params.id !== id) {
                 return false;
             }
 
@@ -147,7 +156,7 @@ $(function () {
             },
         };
 
-        window.opener.postMessage(message('updateContent', config, {contentId, body}), config.host);
+        window.opener.postMessage(message('updateContent', config, {contentId: config.contentId, body}), config.host);
     });
 
     // 用户信息
@@ -186,12 +195,7 @@ function getContentDetail(config, contentId) {
  * @returns {string}
  */
 function message(event, config, data = null) {
-    return JSON.stringify({
-        id: "chrome-extension-confluence-markdown-editor",
-        event,
-        config,
-        data,
-    });
+    return JSON.stringify({id, event, config, data});
 }
 
 /**
