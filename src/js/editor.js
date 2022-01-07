@@ -64,6 +64,7 @@ $(function () {
                     $('#title').val(params.data.title);
                     version.val(params.data.version.number + 1);
                     window.content = params.data;
+                    window.vditor.setValue(params.data.markdown);
                     break;
                 case 'updateContent':
                     if (params.data.status !== 200) {
@@ -105,6 +106,7 @@ $(function () {
 
     // 保存
     $('#save').on('click', function () {
+        let markdown = window.vditor.getValue();
         let html = window.vditor.getHTML();
         let dom = $(`<div><div class="confluence-markdown-editor-content">${html}</div></div>`);
 
@@ -151,8 +153,6 @@ $(function () {
         // 处理换行标签
         html = html.replaceAll('<br>', '<br/>');
 
-        console.log(html);
-
         const body = {
             version: {
                 number: $('#version').val(),
@@ -167,7 +167,7 @@ $(function () {
             },
         };
 
-        window.opener.postMessage(message('updateContent', config, {contentId: config.contentId, body}), config.host);
+        window.opener.postMessage(message('updateContent', config, {contentId: contentId, body, markdown}), config.host);
     });
 
     // 用户信息

@@ -30,16 +30,19 @@ const host = `${location.protocol}//${location.hostname}`;
                             expand: 'body.storage,version',
                         }
                     }).then(res => {
-                        e.source.postMessage(message('getContentDetail', params.config, res.data), '*');
+                        chrome.storage.local.get(['markdowns'], result => {
+                            res.data.markdown = result.markdowns[params.data.contentId];
+                            e.source.postMessage(message('getContentDetail', params.config, res.data), '*');
+                        });
                     });
                     break;
                 case 'updateContent':
+                    // 保存 markdown
+                    saveMarkdown(params.data.contentId, params.data.markdown);
                     axios.put(params.config.api + `/rest/api/content/${params.data.contentId}`, params.data.body)
                         .then(res => {
-                            console.log(res)
                             e.source.postMessage(message('updateContent', params.config, res), '*');
                         }).catch(error => {
-                            console.log(error);
                             e.source.postMessage(message('updateContent', params.config, error.response), '*');
                         }
                     );
@@ -86,6 +89,20 @@ const host = `${location.protocol}//${location.hostname}`;
         });
     });
 })();
+
+function saveMarkdown(contentId, markdown) {
+    chrome.storage.local.get(['markdowns'], result => {
+        let markdowns = {};
+
+        markdowns[contentId] = markdown;
+
+        if (result.markdowns) {
+            markdowns = Object.assign(result.markdowns, markdowns);
+        }
+
+        chrome.storage.local.set({markdowns});
+    });
+}
 
 /**
  * 将头像转换成 base64
@@ -193,7 +210,6 @@ function createMarkdownEditorButton({config, attachment}) {
  * @returns {string}
  */
 function message(event, config, data) {
-    console.log('message', data);
     return JSON.stringify({id, event, config, data});
 }
 
