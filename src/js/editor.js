@@ -29,6 +29,7 @@ $(function () {
                 'X-Atlassian-Token': 'nocheck',
             },
             handler: function (files) {
+                window.uploadLayerIndex = layui.layer.load(1);
                 for (const file in files) {
                     uploadAttachment(Object.assign(config, {contentId}), files[file]);
                 }
@@ -73,15 +74,25 @@ $(function () {
                     version.val(params.data.data.version.number + 1);
                     break;
                 case 'uploadAttachment':
-                    if (params.data.status !== 200) {
-                        return layui.layer.msg(params.data.data.message, {icon: 5});
-                    }
+                    layer.close(window.uploadLayerIndex);
 
-                    // 如果是图片，插入图片，并渲染；
-                    // 如果是文件，按图片渲染，在提交的时候处理文件格式；
-                    let file = params.data.data.results[0];
-                    let fileBase64 = file.extensions.mediaType.startsWith('image') ? file.fileBase64 : fileIconBase64();
-                    window.vditor.insertValue(`\n![${file.title}](${fileBase64})\n`, true);
+                    // 处理附件重复上传
+                    let messageStartsWith = "Cannot add a new attachment with same file name as an existing attachment: ";
+                    if (params.data.status !== 200) {
+                        if (params.data.status === 400 && params.data.data.message.startsWith(messageStartsWith)) {
+                            let title = params.data.data.message.replace(messageStartsWith, '');
+                            let fileBase64 = fileIconBase64();
+                            window.vditor.insertValue(`\n![${title}](${fileBase64})\n`, true);
+                        } else {
+                            return layui.layer.msg(params.data.data.message, {icon: 5});
+                        }
+                    } else {
+                        // 如果是图片，插入图片，并渲染；
+                        // 如果是文件，按图片渲染，在提交的时候处理文件格式；
+                        let file = params.data.data.results[0];
+                        let fileBase64 = file.extensions.mediaType.startsWith('image') ? file.fileBase64 : fileIconBase64();
+                        window.vditor.insertValue(`\n![${file.title}](${fileBase64})\n`, true);
+                    }
                     break;
                 default:
                     break;
@@ -286,7 +297,8 @@ function uploadAttachment(config, file) {
         let url = config.api + `/rest/api/content/${config.contentId}/child/attachment`;
         let fileBase64 = ev.target.result;
         let filenames = file.name.split('.');
-        let filename = filenames[0] + '-' + Math.floor(Math.random() * 100000) + '.' + filenames[1];
+        // let filename = filenames[0] + '-' + Math.floor(Math.random() * 100000) + '.' + filenames[1];
+        let filename = filenames[0] + '.' + filenames[1];
 
         window.opener.postMessage(message('uploadAttachment', config, {
             url,

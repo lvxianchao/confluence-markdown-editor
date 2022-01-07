@@ -37,11 +37,11 @@ const host = `${location.protocol}//${location.hostname}`;
                         .then(res => {
                             console.log(res)
                             e.source.postMessage(message('updateContent', params.config, res), '*');
-
                         }).catch(error => {
-                        console.log(error);
-                        e.source.postMessage(message('updateContent', params.config, error.response), '*');
-                    });
+                            console.log(error);
+                            e.source.postMessage(message('updateContent', params.config, error.response), '*');
+                        }
+                    );
                     break;
                 case 'uploadAttachment':
                     let formdata = new FormData();
