@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vditor from "../lib/vditor/dist/index.min";
 import {v4 as uuid} from 'uuid';
+import juice from "juice";
 
 const id = 'chrome-extension-confluence-markdown-editor';
 
@@ -41,7 +42,8 @@ $(function () {
     });
 
     // 为编辑器内容初始化值的时候，会自动调用此函数，导致异常，做置空处理。
-    window.vditor.clearCache = function (){};
+    window.vditor.clearCache = function () {
+    };
 
     window.addEventListener('message', function (e) {
         try {
@@ -87,8 +89,9 @@ $(function () {
                     let messageStartsWith = "Cannot add a new attachment with same file name as an existing attachment: ";
                     if (params.data.status !== 200) {
                         if (params.data.status === 400 && params.data.data.message.startsWith(messageStartsWith)) {
+                            let base64 = params.data.data.fileBase64;
+                            let fileBase64 = base64.startsWith('data:image') ? base64 : fileIconBase64();
                             let title = params.data.data.message.replace(messageStartsWith, '');
-                            let fileBase64 = fileIconBase64();
                             window.vditor.insertValue(`\n![${title}](${fileBase64})\n`, true);
                         } else {
                             return layui.layer.msg(params.data.data.message, {icon: 5});
@@ -112,72 +115,40 @@ $(function () {
 
     // 保存
     $('#save').on('click', function () {
-        let markdown = window.vditor.getValue();
-        let html = window.vditor.getHTML();
-        let dom = $(`<div><div class="confluence-markdown-editor-content">${html}</div></div>`);
-
-        // 处理图片
-        dom.find('img').each(function () {
-            // 图片和文件
-            let confluenceImageHTML = '';
-            let src = $(this).attr('src');
-            let alt = $(this).attr('alt');
-            if (src.startsWith('http') || src.startsWith('https')) {
-                // 网络图片
-                confluenceImageHTML = convertImgToConfluenceHTML(src, '', true);
-            } else if (src.startsWith('data:image/')) {
-                if (src === fileIconBase64()) {
-                    // 本地上传文件
-                    confluenceImageHTML = convertFileToConfluenceHTML(alt, attachmentConfig);
-                } else {
-                    // 本地上传图片
-                    confluenceImageHTML = convertImgToConfluenceHTML(src, alt, false);
-                }
+        // 主题渲染
+        let url = '../themes/purple.css';
+        $.get(url, function (css, status) {
+            if (status !== 'success') {
+                return layer.msg('读取主题发生错误');
             }
 
-            $(this).replaceWith(confluenceImageHTML);
+            let markdown = window.vditor.getValue();
+
+            let html = `<div class="confluence-markdown-editor-content">${window.vditor.getHTML()}</div>`;
+            html += `<style>${css}</style>`;
+            html = juice(html, {removeStyleTags: true, preserveImportant: true});
+            html = convertHTMLTags(html, attachmentConfig)
+
+            const body = {
+                version: {
+                    number: $('#version').val(),
+                },
+                title: $('#title').val(),
+                type: window.content.type,
+                body: {
+                    storage: {
+                        representation: window.content.body.storage.representation,
+                        value: html,
+                    }
+                },
+            };
+
+            window.opener.postMessage(message('updateContent', config, {
+                contentId,
+                body,
+                markdown
+            }), config.host);
         });
-
-        // 处理代码块
-        dom.find('code').each(function () {
-            if ($(this).parent().prop('tagName') === 'PRE') {
-                let language = '';
-                if ($(this).attr('class')) {
-                    language = $(this).attr('class').replace('language-', '');
-                }
-                let code = $(this).text();
-                $(this).parent().replaceWith(convertCodeToConfluenceHTML(language, code));
-            }
-        });
-        html = dom.html();
-        html = html.replaceAll('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
-        html = html.replaceAll(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
-
-        // 处理水平线
-        html = html.replaceAll('<hr>', '<hr/>');
-
-        // 处理换行标签
-        html = html.replaceAll('<br>', '<br/>');
-
-        const body = {
-            version: {
-                number: $('#version').val(),
-            },
-            title: $('#title').val(),
-            type: window.content.type,
-            body: {
-                storage: {
-                    representation: window.content.body.storage.representation,
-                    value: html,
-                }
-            },
-        };
-
-        window.opener.postMessage(message('updateContent', config, {
-            contentId: contentId,
-            body,
-            markdown
-        }), config.host);
     });
 
     // 用户信息
@@ -186,6 +157,62 @@ $(function () {
     // 文章信息
     getContentDetail(config, contentId);
 });
+
+/**
+ * 将编辑获取到的 HTML 转换成 Wiki 标签
+ *
+ * @param styledHtml
+ * @param attachmentConfig
+ * @returns {*}
+ */
+function convertHTMLTags(styledHtml, attachmentConfig) {
+    let dom = $(`<div>${styledHtml}</div>`);
+
+    // 处理图片
+    dom.find('img').each(function () {
+        // 图片和文件
+        let confluenceImageHTML = '';
+        let src = $(this).attr('src');
+        let alt = $(this).attr('alt');
+        if (src.startsWith('http') || src.startsWith('https')) {
+            // 网络图片
+            confluenceImageHTML = convertImgToConfluenceHTML(src, '', true);
+        } else if (src.startsWith('data:image/')) {
+            if (src === fileIconBase64()) {
+                // 本地上传文件
+                confluenceImageHTML = convertFileToConfluenceHTML(alt, attachmentConfig);
+            } else {
+                // 本地上传图片
+                confluenceImageHTML = convertImgToConfluenceHTML(src, alt, false);
+            }
+        }
+
+        $(this).replaceWith(confluenceImageHTML);
+    });
+
+    // 处理代码块
+    dom.find('code').each(function () {
+        if ($(this).parent().prop('tagName') === 'PRE') {
+            let language = '';
+            if ($(this).attr('class')) {
+                language = $(this).attr('class').replace('language-', '');
+            }
+            let code = $(this).text();
+            $(this).parent().replaceWith(convertCodeToConfluenceHTML(language, code));
+        }
+    });
+    let html = dom.html();
+    html = html.replaceAll('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
+    html = html.replaceAll(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
+
+    // 处理水平线
+    html = html.replaceAll('<hr>', '<hr/>');
+
+    // 处理换行标签
+    html = html.replaceAll('<br>', '<br/>');
+
+    return html;
+}
 
 /**
  * 用户信息
@@ -307,7 +334,6 @@ function uploadAttachment(config, file) {
         let url = config.api + `/rest/api/content/${config.contentId}/child/attachment`;
         let fileBase64 = ev.target.result;
         let filenames = file.name.split('.');
-        // let filename = filenames[0] + '-' + Math.floor(Math.random() * 100000) + '.' + filenames[1];
         let filename = filenames[0] + '.' + filenames[1];
 
         window.opener.postMessage(message('uploadAttachment', config, {

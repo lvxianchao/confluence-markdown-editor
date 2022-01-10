@@ -61,6 +61,7 @@ const host = `${location.protocol}//${location.hostname}`;
                         res.data.results[0].fileBase64 = params.data.fileBase64;
                         e.source.postMessage(message('uploadAttachment', params.config, res), '*');
                     }).catch(error => {
+                        error.response.data.fileBase64 = params.data.fileBase64;
                         e.source.postMessage(message('uploadAttachment', params.config, error.response), '*');
                     });
                     break;
