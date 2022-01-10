@@ -22,6 +22,9 @@ $(function () {
     window.vditor = new Vditor('vditor', {
         cdn: '../lib/vditor',
         mode: 'wysiwyg',
+        cache: {
+            enable: false,
+        },
         upload: {
             url: `${config.api}/rest/api/content/${contentId}/child/attachment`,
             filedName: 'file',
@@ -36,6 +39,9 @@ $(function () {
             },
         },
     });
+
+    // 为编辑器内容初始化值的时候，会自动调用此函数，导致异常，做置空处理。
+    window.vditor.clearCache = function (){};
 
     window.addEventListener('message', function (e) {
         try {
@@ -64,7 +70,7 @@ $(function () {
                     $('#title').val(params.data.title);
                     version.val(params.data.version.number + 1);
                     window.content = params.data;
-                    window.vditor.setValue(params.data.markdown);
+                    window.vditor.setValue(params.data.markdown, true);
                     break;
                 case 'updateContent':
                     if (params.data.status !== 200) {
@@ -167,7 +173,11 @@ $(function () {
             },
         };
 
-        window.opener.postMessage(message('updateContent', config, {contentId: contentId, body, markdown}), config.host);
+        window.opener.postMessage(message('updateContent', config, {
+            contentId: contentId,
+            body,
+            markdown
+        }), config.host);
     });
 
     // 用户信息

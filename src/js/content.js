@@ -31,7 +31,8 @@ const host = `${location.protocol}//${location.hostname}`;
                         }
                     }).then(res => {
                         chrome.storage.local.get(['markdowns'], result => {
-                            res.data.markdown = result.markdowns[params.data.contentId];
+                            let markdown = result.markdowns[params.data.contentId];
+                            res.data.markdown = markdown ? markdown : '';
                             e.source.postMessage(message('getContentDetail', params.config, res.data), '*');
                         });
                     });
