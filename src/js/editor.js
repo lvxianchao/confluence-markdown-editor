@@ -27,6 +27,7 @@ let attachmentConfig;
 
 $(function () {
     // 发送初始化函数，获取插件配置信息
+    window.initLayerIndex = layui.layer.load(1);
     window.opener.postMessage('init', '*');
     window.addEventListener('message', function (e) {
         if (e.data instanceof Object && e.data.id && e.data.id === id) {
@@ -91,6 +92,7 @@ function work() {
                     version.val(params.data.version.number + 1);
                     window.content = params.data;
                     window.vditor.setValue(params.data.markdown, true);
+                    layui.layer.close(window.initLayerIndex);
                     break;
                 case 'updateContent':
                     if (params.data.status !== 200) {
@@ -99,6 +101,7 @@ function work() {
 
                     layui.layer.msg('保存成功', {icon: 6});
                     version.val(params.data.data.version.number + 1);
+                    layui.layer.close(window.saveContentLayerIndex);
                     break;
                 case 'uploadAttachment':
                     layer.close(window.uploadLayerIndex);
@@ -133,8 +136,10 @@ function work() {
 
     // 保存
     $('#save').on('click', function () {
-        // 主题渲染
+        window.saveContentLayerIndex = layui.layer.load(1);
+
         let url = '../themes/purple.css';
+
         $.get(url, function (css, status) {
             if (status !== 'success') {
                 return layer.msg('读取主题发生错误');
