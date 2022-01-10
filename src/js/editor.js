@@ -3,18 +3,33 @@ import Vditor from "../lib/vditor/dist/index.min";
 import {v4 as uuid} from 'uuid';
 import juice from "juice";
 
+/**
+ * 跨标签通信时的消息身份 ID
+ *
+ * @type {string}
+ */
 const id = 'chrome-extension-confluence-markdown-editor';
 
+/**
+ * 编辑文章的 ID
+ */
 let contentId;
+
+/**
+ * 生效域名配置信息
+ */
 let config;
+
+/**
+ * 附件配置信息
+ */
 let attachmentConfig;
 
 $(function () {
+    // 发送初始化函数，获取插件配置信息
     window.opener.postMessage('init', '*');
-
     window.addEventListener('message', function (e) {
         if (e.data instanceof Object && e.data.id && e.data.id === id) {
-            console.log(e.data);
             contentId = e.data.contentId;
             config = e.data.config;
             attachmentConfig = e.data.attachment;
@@ -24,21 +39,10 @@ $(function () {
     })
 });
 
+/**
+ * 初始化编辑器及其他工作
+ */
 function work() {
-    // return ;
-
-    // const params = new URLSearchParams(location.search);
-    // const contentId = params.get('page_id');
-    // let config = params.get('config');
-    // let attachmentConfig = params.get('attachment');
-
-    // if (!config || !contentId || !attachmentConfig) {
-    //     return layui.layer.msg('错误: 参数丢失', {icon: 5, time: 2000});
-    // }
-
-    // config = JSON.parse(config);
-    // attachmentConfig = JSON.parse(attachmentConfig);
-
     window.vditor = new Vditor('vditor', {
         cdn: '../lib/vditor',
         mode: 'wysiwyg',
@@ -66,11 +70,6 @@ function work() {
 
     window.addEventListener('message', function (e) {
         try {
-            // if (e.data instanceof Object && e.data.id && e.data.id === id) {
-            //     console.log(e.data);
-            //     return;
-            // }
-
             if (e.origin !== config.host) {
                 return false;
             }
