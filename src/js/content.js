@@ -74,18 +74,16 @@ const host = `${location.protocol}//${location.hostname}`;
     }, false);
 
     // 如果当前域名在配置里，则注入编辑器按钮
-    chrome.storage.sync.get(['config', 'attachment'], (result) => {
+    chrome.storage.sync.get(['config'], (result) => {
         if (!result.config) {
             return false;
         }
-
-        let attachment = result.attachment;
 
         let hasCreatedButton = false;
         result.config.forEach(config => {
             if (!hasCreatedButton) {
                 if (config.host === host) {
-                    hasCreatedButton = createMarkdownEditorButton({config, attachment});
+                    hasCreatedButton = createMarkdownEditorButton();
                 }
             }
         });
@@ -169,16 +167,7 @@ function init(e) {
  *
  * @returns {boolean}
  */
-function createMarkdownEditorButton({config, attachment}) {
-    const meta = document.querySelector('meta[name="ajs-page-id"]');
-
-    if (!meta) {
-        return false;
-    }
-
-    // Content ID
-    const pageId = meta.getAttribute('content');
-
+function createMarkdownEditorButton() {
     // 注入按钮
     const container = document.querySelector('div#navigation > ul.ajs-menu-bar');
     const a = `<div class="aui-button aui-button-primary" id="kkjofhv-confluence-markdown-editor" style="color: #FFF;">Markdown</div>`;
@@ -187,11 +176,7 @@ function createMarkdownEditorButton({config, attachment}) {
     li.innerHTML = a;
     container.insertBefore(li, document.querySelector('#navigation li'));
 
-    // Markdown 编辑器页面
-    let extensionEditorPageUrl = chrome.runtime.getURL('pages/editor.html')
-        + `?page_id=${pageId}&config=` + encodeURIComponent(JSON.stringify(config))
-        + `&attachment=` + encodeURIComponent(JSON.stringify(attachment))
-    ;
+    let extensionEditorPageUrl = chrome.runtime.getURL('pages/editor.html');
 
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector('#kkjofhv-confluence-markdown-editor');

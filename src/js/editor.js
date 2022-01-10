@@ -5,20 +5,39 @@ import juice from "juice";
 
 const id = 'chrome-extension-confluence-markdown-editor';
 
+let contentId;
+let config;
+let attachmentConfig;
+
 $(function () {
-    // window.opener.postMessage('init', '*');
+    window.opener.postMessage('init', '*');
 
-    const params = new URLSearchParams(location.search);
-    const contentId = params.get('page_id');
-    let config = params.get('config');
-    let attachmentConfig = params.get('attachment');
+    window.addEventListener('message', function (e) {
+        if (e.data instanceof Object && e.data.id && e.data.id === id) {
+            console.log(e.data);
+            contentId = e.data.contentId;
+            config = e.data.config;
+            attachmentConfig = e.data.attachment;
 
-    if (!config || !contentId || !attachmentConfig) {
-        return layui.layer.msg('错误: 参数丢失', {icon: 5, time: 2000});
-    }
+            work();
+        }
+    })
+});
 
-    config = JSON.parse(config);
-    attachmentConfig = JSON.parse(attachmentConfig);
+function work() {
+    // return ;
+
+    // const params = new URLSearchParams(location.search);
+    // const contentId = params.get('page_id');
+    // let config = params.get('config');
+    // let attachmentConfig = params.get('attachment');
+
+    // if (!config || !contentId || !attachmentConfig) {
+    //     return layui.layer.msg('错误: 参数丢失', {icon: 5, time: 2000});
+    // }
+
+    // config = JSON.parse(config);
+    // attachmentConfig = JSON.parse(attachmentConfig);
 
     window.vditor = new Vditor('vditor', {
         cdn: '../lib/vditor',
@@ -47,10 +66,10 @@ $(function () {
 
     window.addEventListener('message', function (e) {
         try {
-            if (e.data instanceof Object && e.data.id && e.data.id === id) {
-                console.log(e.data);
-                return;
-            }
+            // if (e.data instanceof Object && e.data.id && e.data.id === id) {
+            //     console.log(e.data);
+            //     return;
+            // }
 
             if (e.origin !== config.host) {
                 return false;
@@ -156,7 +175,7 @@ $(function () {
 
     // 文章信息
     getContentDetail(config, contentId);
-});
+}
 
 /**
  * 将编辑获取到的 HTML 转换成 Wiki 标签
