@@ -25,8 +25,14 @@ let config;
  */
 let attachmentConfig;
 
+/**
+ * 主题地址
+ */
+let theme;
+
+// 发送初始化函数，获取插件配置信息
 $(function () {
-    // 发送初始化函数，获取插件配置信息
+
     window.initLayerIndex = layui.layer.load(1);
     window.opener.postMessage('init', '*');
     window.addEventListener('message', function (e) {
@@ -34,6 +40,7 @@ $(function () {
             contentId = e.data.contentId;
             config = e.data.config;
             attachmentConfig = e.data.attachment;
+            theme = e.data.theme;
 
             work();
         }
@@ -138,39 +145,46 @@ function work() {
     $('#save').on('click', function () {
         window.saveContentLayerIndex = layui.layer.load(1);
 
-        let url = '../themes/purple.css';
+        let url = theme ? theme : '../themes/purple.css';
 
-        $.get(url, function (css, status) {
-            if (status !== 'success') {
-                return layer.msg('读取主题发生错误');
+        $.ajax({
+            url: url,
+            error: function () {
+                layui.layer.close(window.saveContentLayerIndex);
+                layui.layer.msg("读取主题失败", {icon: 5});
+            },
+            success: function (css, status) {
+                if (status !== 'success') {
+                    return layer.msg('读取主题发生错误');
+                }
+
+                let markdown = window.vditor.getValue();
+
+                let html = `<div class="confluence-markdown-editor-content">${window.vditor.getHTML()}</div>`;
+                html += `<style>${css}</style>`;
+                html = juice(html, {removeStyleTags: true, preserveImportant: true});
+                html = convertHTMLTags(html, attachmentConfig)
+
+                const body = {
+                    version: {
+                        number: $('#version').val(),
+                    },
+                    title: $('#title').val(),
+                    type: window.content.type,
+                    body: {
+                        storage: {
+                            representation: window.content.body.storage.representation,
+                            value: html,
+                        }
+                    },
+                };
+
+                window.opener.postMessage(message('updateContent', config, {
+                    contentId,
+                    body,
+                    markdown
+                }), config.host);
             }
-
-            let markdown = window.vditor.getValue();
-
-            let html = `<div class="confluence-markdown-editor-content">${window.vditor.getHTML()}</div>`;
-            html += `<style>${css}</style>`;
-            html = juice(html, {removeStyleTags: true, preserveImportant: true});
-            html = convertHTMLTags(html, attachmentConfig)
-
-            const body = {
-                version: {
-                    number: $('#version').val(),
-                },
-                title: $('#title').val(),
-                type: window.content.type,
-                body: {
-                    storage: {
-                        representation: window.content.body.storage.representation,
-                        value: html,
-                    }
-                },
-            };
-
-            window.opener.postMessage(message('updateContent', config, {
-                contentId,
-                body,
-                markdown
-            }), config.host);
         });
     });
 

@@ -28,6 +28,7 @@
         <fieldset class="layui-elem-field">
             <legend>作用域</legend>
             <div class="layui-field-box">
+                <blockquote class="layui-elem-quote">此插件会在对应 Host 的域名下生效并请求对应 API</blockquote>
                 <table class="layui-table" id="config-table">
                     <thead>
                     <tr>
@@ -47,6 +48,7 @@
         <fieldset class="layui-elem-field">
             <legend>附件</legend>
             <div class="layui-field-box">
+                <blockquote class="layui-elem-quote">容器是使用 wiki 的信息宏和提示宏，可以将附件包裹起来，达到一定的美化作用。</blockquote>
                 <div class="layui-form-item" pane="">
                     <label class="layui-form-label">显示方式</label>
                     <div class="layui-input-block">
@@ -84,6 +86,19 @@
                     <div class="layui-input-block">
                         <input type="text" id="attachment_container_title" name="attachment_container_title"
                                class="layui-input" value="附件">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>Markdown 渲染主题</legend>
+            <div class="layui-field-box">
+                <blockquote class="layui-elem-quote">在这里可以指定你自定义的 Markdown 渲染主题，必须是有效的 URL，如果值为空则使用默认主题进行渲染。</blockquote>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" for="theme">主题地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="theme" name="theme" class="layui-input" value="">
                     </div>
                 </div>
             </div>

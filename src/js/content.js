@@ -141,7 +141,7 @@ function getContentId() {
  * @param e
  */
 function init(e) {
-    chrome.storage.sync.get(['config', 'attachment'], result => {
+    chrome.storage.sync.get(['config', 'attachment', 'theme'], result => {
         if (!result.config) {
             return false;
         }
@@ -153,6 +153,7 @@ function init(e) {
                     contentId: getContentId(),
                     config: config,
                     attachment: result.attachment,
+                    theme: result.theme,
                 };
 
                 e.source.postMessage(data, '*');

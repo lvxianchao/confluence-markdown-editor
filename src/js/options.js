@@ -59,7 +59,10 @@ $(function () {
             }
         };
 
-        chrome.storage.sync.set({config, attachment});
+        // 主题
+        let theme = val.theme
+
+        chrome.storage.sync.set({config, attachment, theme});
 
         layui.layer.msg('保存成功', {icon: 6, time: 2000});
 
@@ -67,15 +70,24 @@ $(function () {
     });
 
     // 页面初始化，读取已保存的配置信息渲染
-    chrome.storage.sync.get(['config', 'attachment'], function (result) {
+    chrome.storage.sync.get(['config', 'attachment', 'theme'], function (result) {
         // 作用域
         configConfigRender(result.config);
         // 附件
         attachmentConfigRender(result.attachment);
+        // 主题
+        themeConfigRender(result.theme);
     });
-
-    // 页面初始化，读取已保存的配置信息渲染：作用域
 });
+
+/**
+ * 主题
+ *
+ * @param theme
+ */
+function themeConfigRender(theme) {
+    $('#theme').val(theme);
+}
 
 /**
  * 切换是否使用容器状态
