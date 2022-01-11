@@ -103,6 +103,7 @@ function work() {
                     break;
                 case 'updateContent':
                     if (params.data.status !== 200) {
+                        console.log(params.data.data.message);
                         return layui.layer.msg(params.data.data.message, {icon: 5});
                     }
 
@@ -228,6 +229,7 @@ function convertHTMLTags(styledHtml, attachmentConfig) {
     });
 
     // 处理代码块
+    let codes = [];
     dom.find('code').each(function () {
         if ($(this).parent().prop('tagName') === 'PRE') {
             let language = '';
@@ -235,12 +237,18 @@ function convertHTMLTags(styledHtml, attachmentConfig) {
                 language = $(this).attr('class').replace('language-', '');
             }
             let code = $(this).text();
-            $(this).parent().replaceWith(convertCodeToConfluenceHTML(language, code));
+            let html = convertCodeToConfluenceHTML(language);
+            $(this).parent().replaceWith(html);
+            codes.push(code);
         }
     });
+
     let html = dom.html();
-    html = html.replaceAll('<ac:plain-text-body><!--[CDATA[', '<ac:plain-text-body><![CDATA[');
-    html = html.replaceAll(']]--></ac:plain-text-body>', ']]></ac:plain-text-body>');
+
+    // 处理代码块
+    codes.forEach(function (code) {
+        html = html.replace('<ac:plain-text-body></ac:plain-text-body>', `<ac:plain-text-body><![CDATA[${code}]]></ac:plain-text-body>`);
+    });
 
     // 处理水平线
     html = html.replaceAll('<hr>', '<hr/>');
@@ -287,10 +295,10 @@ function message(event, config, data = null) {
  * 转换代码块
  *
  * @param language 语言
- * @param code 代码
+ *
  * @returns {string}
  */
-function convertCodeToConfluenceHTML(language, code) {
+function convertCodeToConfluenceHTML(language) {
     return `
         <ac:structured-macro ac:macro-id="${uuid()}" ac:name="code" ac:schema-version="1">
             <ac:parameter ac:name="language">${language}</ac:parameter>
@@ -298,7 +306,7 @@ function convertCodeToConfluenceHTML(language, code) {
             <ac:parameter ac:name="borderStyle">solid</ac:parameter>
             <ac:parameter ac:name="linenumbers">true</ac:parameter>
             <ac:parameter ac:name="collapse">false</ac:parameter>
-            <ac:plain-text-body><![CDATA[${code}]]></ac:plain-text-body>
+            <ac:plain-text-body></ac:plain-text-body>
         </ac:structured-macro>
     `;
 }
