@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Confluence Markdown Editor",
     "description": "A Markdown editor for Confluence.",
-    "version": "2.0",
+    "version": "2.2",
     "homepage_url": "https://www.github.com/lvxianchao/confluence-markdown-editor",
     "icons": {
         "16": "images/icon.png",
