@@ -95,6 +95,7 @@ function work() {
                     $('#avatar').attr('src', params.data.avatar);
                     break;
                 case 'getContentDetail':
+                    console.log(params);
                     $('#title').val(params.data.title);
                     version.val(params.data.version.number + 1);
                     window.content = params.data;

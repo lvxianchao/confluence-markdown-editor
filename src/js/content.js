@@ -31,8 +31,7 @@ const host = `${location.protocol}//${location.hostname}`;
                         }
                     }).then(res => {
                         chrome.storage.local.get(['markdowns'], result => {
-                            let markdown = result.markdowns[params.data.contentId];
-                            res.data.markdown = markdown ? markdown : '';
+                            res.data.markdown = result.markdowns ? result.markdowns[params.data.contentId] : '';
                             e.source.postMessage(message('getContentDetail', params.config, res.data), '*');
                         });
                     });
@@ -90,6 +89,12 @@ const host = `${location.protocol}//${location.hostname}`;
     });
 })();
 
+/**
+ * 保存 Markdown
+ *
+ * @param contentId
+ * @param markdown
+ */
 function saveMarkdown(contentId, markdown) {
     chrome.storage.local.get(['markdowns'], result => {
         let markdowns = {};
