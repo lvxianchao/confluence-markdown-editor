@@ -98,7 +98,7 @@ function work() {
                     $('#title').val(params.data.title);
                     version.val(params.data.version.number + 1);
                     window.content = params.data;
-                    window.vditor.setValue(params.data.markdown ? params.da.markdown : '', true);
+                    window.vditor.setValue(params.data.markdown ? params.data.markdown : '', true);
                     layui.layer.close(window.initLayerIndex);
                     break;
                 case 'updateContent':
@@ -251,10 +251,10 @@ function convertHTMLTags(styledHtml, attachmentConfig) {
     });
 
     // 处理水平线
-    html = html.replaceAll('<hr>', '<hr/>');
+    html = html.replaceAll(/<hr (.*?)>/g, "<hr $1 />");
 
     // 处理换行标签
-    html = html.replaceAll('<br>', '<br/>');
+    html = html.replaceAll(/<br (.*?)>/g, '<br $1 />');
 
     return html;
 }
