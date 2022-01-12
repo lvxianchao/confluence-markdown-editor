@@ -73,7 +73,7 @@ Markdown 渲染主题其实就是你所写的 Markdown 渲染到 wiki 页面上�
 
 输入完成后点击右上方`保存`按钮，回到 wiki 的页面上刷新可以查看效果。
 
-![image](https://user-images.githubusercontent.com/22412818/148865165-8dec60d4-5e4a-4cff-83f3-da2ec6c06a52.png)
+![options](https://user-images.githubusercontent.com/22412818/149041564-c3d3f692-4abe-4653-9f99-0ffdf5577151.png)
 
 > 注意:
 >
