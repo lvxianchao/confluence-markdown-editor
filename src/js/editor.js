@@ -95,11 +95,10 @@ function work() {
                     $('#avatar').attr('src', params.data.avatar);
                     break;
                 case 'getContentDetail':
-                    console.log(params);
                     $('#title').val(params.data.title);
                     version.val(params.data.version.number + 1);
                     window.content = params.data;
-                    window.vditor.setValue(params.data.markdown, true);
+                    window.vditor.setValue(params.data.markdown ? params.da.markdown : '', true);
                     layui.layer.close(window.initLayerIndex);
                     break;
                 case 'updateContent':
