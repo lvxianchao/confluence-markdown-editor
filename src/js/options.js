@@ -41,8 +41,8 @@ $(function () {
         let config = [];
         $('#config-table > tbody > tr').each(function () {
             config.push({
-                host: $(this).find('input:eq(0)').val(),
-                api: $(this).find('input:eq(1)').val(),
+                host: $(this).find('input:eq(0)').val().trim('/'),
+                api: $(this).find('input:eq(1)').val().trim('/'),
             });
         });
 
@@ -79,6 +79,18 @@ $(function () {
         themeConfigRender(result.theme);
     });
 });
+
+String.prototype.trim = function (char, type) {
+    if (char) {
+        if (type === 'left') {
+            return this.replace(new RegExp('^\\'+char+'+', 'g'), '');
+        } else if (type === 'right') {
+            return this.replace(new RegExp('\\'+char+'+$', 'g'), '');
+        }
+        return this.replace(new RegExp('^\\'+char+'+|\\'+char+'+$', 'g'), '');
+    }
+    return this.replace(/^\s+|\s+$/g, '');
+};
 
 /**
  * 主题
