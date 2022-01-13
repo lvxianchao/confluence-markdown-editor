@@ -254,7 +254,7 @@ function convertHTMLTags(styledHtml, attachmentConfig) {
     html = html.replaceAll(/<hr (.*?)>/g, "<hr $1 />");
 
     // 处理换行标签
-    html = html.replaceAll(/<br (.*?)>/g, '<br $1 />');
+    html = html.replaceAll(/<br(.*?)>/g, '<br $1 />');
 
     return html;
 }
