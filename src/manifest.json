@@ -11,7 +11,6 @@
     },
     "options_page": "pages/options.html",
     "permissions": [
-        "tabs",
         "storage",
         "unlimitedStorage"
     ],
