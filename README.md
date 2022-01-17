@@ -12,7 +12,7 @@
 
 ## 安装
 
-1. 在线安装：[Google Chrome Web Store](https://chrome.google.com/webstore/detail/confluence-markdown-edito/jldbgellbepcpbggjfpmjafpggpkbgca?hl=zh-CN&authuser=0) **（目前尚未发布到商店，可以 Watch [此仓库](https://github.com/lvxianchao/confluence-markdown-editor) 以获取最新版本）**
+1. 在线安装：[Google Chrome Web Store](https://chrome.google.com/webstore/detail/confluence-markdown-edito/jldbgellbepcpbggjfpmjafpggpkbgca?hl=zh-CN&authuser=0) 。
 2. 本地安装：在 [Release](https://github.com/lvxianchao/confluence-markdown-editor/releases) 页面直接下载最新版本的 `.crx`，把后缀改名为 `.zip` 解压后拖放到浏览器的扩展管理页面里进行安装。
 
 **强烈推荐使用在线安装方式安装，可以得到即时的版本更新，获得更好的体验。**
