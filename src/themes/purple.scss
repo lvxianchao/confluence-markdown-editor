@@ -17,10 +17,9 @@ $active-file-text-color: $title-color;
 $active-file-bg-color: #eee;
 $item-hover-bg-color: #eee;
 $active-file-border-color: #8064a9;
-$base-font: Monaco, PingFang SC, Source Sans Pro, Helvetica Neue, Microsoft YaHei, sans-serif;
-$title-font: EB Garamond, Georgia, PingFang SC, Source Sans Pro, Helvetica Neue, Microsoft YaHei, serif;
-$monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, Deja Vu Sans Mono,
-Consolas, Lucida Console, Andale Mono, Roboto Mono, Courier, Monospace, serif;
+$base-font: Monaco, JetBrains Mono, PingFang SC, Microsoft YaHei, Source Sans Pro, Helvetica Neue, sans-serif;
+$title-font: Monaco, JetBrains Mono, Microsoft YaHei, PingFang SC, Helvetica Neue, EB Garamond, Georgia, Source Sans Pro, serif;
+$monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, Deja Vu Sans Mono, Consolas, Lucida Console, Andale Mono, Roboto Mono, Courier, Monospace, serif;
 
 .confluence-markdown-editor-content {
   text-rendering: optimizelegibility !important;
@@ -110,7 +109,6 @@ Consolas, Lucida Console, Andale Mono, Roboto Mono, Courier, Monospace, serif;
   h6 {
     font-size: 1.1em !important;
   }
-
 
 
   hr {
