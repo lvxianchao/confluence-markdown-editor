@@ -11,6 +11,7 @@
     },
     "options_page": "pages/options.html",
     "permissions": [
+        "cookies",
         "storage",
         "unlimitedStorage"
     ],
@@ -39,7 +40,7 @@
     ],
     "sandbox": {
         "pages": [
-            "pages/editor.html"
+
         ]
     },
     "background": {

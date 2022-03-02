@@ -5,9 +5,8 @@
 ## 注意
 
 1. **因开发环境有限，此插件不保证在任何版本的 wiki 上都可以正确工作。**
-2. **目前的版本仅做 Markdown 基础语法支持，和附件上传支持**
+2. **目前的版本仅做 Markdown 基础语法支持**
 3. **尚不支持 Markdown 扩展语法，如：数学公式等。**
-4. 支持图片上传、附件上传。
 5. 关于 **更新**，只支持读取此插件编辑过的内容，不支持从 wiki 的编辑页面编辑过的内容。
 
 ## 安装
@@ -31,18 +30,6 @@
 * API: 对应 Host 域名的接口请求地址，如：https://wiki.example.com。
 
 如果你同时使用多个 wiki，可以点击添加按钮来添加其它站点的配置。
-
-### 附件
-
-#### 显示方式
-
-这里可以选择附件的显示方式。
-
-#### 容器
-
-这里可以配置附件是否使用容器包裹等信息。
-
-所谓容器，其实是以 wiki 自带的 **信息宏** 和 **提示宏**，将附件放在容器内显示，可能会达到一定的美化效果。
 
 ### Markdown 渲染主题
 
@@ -84,12 +71,14 @@ Markdown 渲染主题其实就是你所写的 Markdown 渲染到 wiki 页面上�
 此插件在以下环境中编写及测试，建议使用相应版本或更高的版本。
 
 * Node.js: v16.13.1
-* npm: v8.1.2
+* yarn: v1.22.15
 
 ```shell
 git clone https://github.com/lvxianchao/confluence-markdown-editor.git
 
-npm install
+cd confluence-markdown-editor
 
-npx mix watch
+yarn
+
+yarn run dev 
 ```

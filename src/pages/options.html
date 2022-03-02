@@ -46,52 +46,6 @@
         </fieldset>
 
         <fieldset class="layui-elem-field">
-            <legend>附件</legend>
-            <div class="layui-field-box">
-                <blockquote class="layui-elem-quote">容器是使用 wiki 的信息宏和提示宏，可以将附件包裹起来，达到一定的美化作用。</blockquote>
-                <div class="layui-form-item" pane="">
-                    <label class="layui-form-label">显示方式</label>
-                    <div class="layui-input-block">
-                        <input type="radio" name="attachment_show_type" value="link" title="作为链接显示" checked>
-                        <input type="radio" name="attachment_show_type" value="thumbnail" title="作为缩略图显示">
-                    </div>
-                </div>
-
-                <div class="layui-form-item" pane="">
-                    <label class="layui-form-label" for="attachment_container_enable">使用容器</label>
-                    <div class="layui-input-block">
-                        <input type="checkbox" id="attachment_container_enable" name="attachment_container_enable"
-                               lay-skin="switch" lay-text="ON|OFF" lay-filter="attachment_container_enable" checked>
-                    </div>
-                </div>
-
-                <div class="layui-form-item" pane="">
-                    <label class="layui-form-label">容器类型</label>
-                    <div class="layui-input-block">
-                        <input type="radio" name="attachment_container_type" value="tip" title="提示" checked>
-                        <input type="radio" name="attachment_container_type" value="info" title="信息">
-                    </div>
-                </div>
-
-                <div class="layui-form-item" pane="">
-                    <label class="layui-form-label" for="attachment_container_icon">容器图标</label>
-                    <div class="layui-input-block">
-                        <input type="checkbox" id="attachment_container_icon" name="attachment_container_icon" lay-skin="switch"
-                               lay-text="ON|OFF" checked>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label" for="attachment_container_title">容器标题</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="attachment_container_title" name="attachment_container_title"
-                               class="layui-input" value="附件">
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="layui-elem-field">
             <legend>Markdown 渲染主题</legend>
             <div class="layui-field-box">
                 <blockquote class="layui-elem-quote">在这里可以指定你自定义的 Markdown 渲染主题，必须是有效的 URL，如果值为空则使用默认主题进行渲染。</blockquote>

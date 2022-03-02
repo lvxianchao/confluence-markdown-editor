@@ -5,3 +5,21 @@ chrome.runtime.onInstalled.addListener((reason) => {
         });
     }
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (sender.id !== chrome.runtime.id) {
+        return;
+    }
+
+    switch (request.event) {
+        case "getCookie":
+            chrome.cookies.get({url: request.url, name: "JSESSIONID"}, cookie => {
+                sendResponse({cookie});
+            });
+            break;
+        default:
+            return;
+    }
+
+    return true;
+});
