@@ -24,14 +24,15 @@
                 "<all_urls>"
             ],
             "js": [
-                "js/content.js"
+                "js/inject.js"
             ]
         }
     ],
     "web_accessible_resources": [
         {
             "resources": [
-                "pages/editor.html"
+                "pages/content.html",
+                "pages/comment.html"
             ],
             "matches": [
                 "<all_urls>"

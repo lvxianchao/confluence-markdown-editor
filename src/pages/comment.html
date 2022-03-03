@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/comment.css">
+    <title>Confluence Markdown Editor - 评论</title>
+</head>
+<body>
+<div class="layui-container-fluid">
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="javascript:void(0);">
+                <img src="" class="layui-nav-img" id="avatar" alt="">
+                <span id="username">用户名</span>
+            </a>
+        </li>
+        <li class="layui-nav-item" id="btn-save">
+            <button class="layui-btn layui-btn-normal" id="save">保存</button>
+        </li>
+    </ul>
+
+    <form action="" class="layui-form layui-form-pane" autocomplete="off">
+        <div id="editor"></div>
+
+        <input type="hidden" name="version" id="version" value="">
+    </form>
+</div>
+
+<script src="../lib/layui/layui.js"></script>
+<script src="../js/comment.js"></script>
+</body>
+</html>
