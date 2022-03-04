@@ -49,7 +49,7 @@ function user() {
 /**
  * 获取文章信息
  */
-function content() {
+function content(isPage = false) {
     axios.get(`${window.cme.api}/rest/api/content/${window.cme.contentId}`, {
         params: {
             expand: 'body.storage,version',
@@ -57,7 +57,7 @@ function content() {
     }).then(res => {
         window.cme.content = res.data;
 
-        if (window.cme.isPage) {
+        if (isPage) {
             $('#title').val(res.data.title);
             $('#version').val(res.data.version.number + 1);
         }
@@ -67,8 +67,12 @@ function content() {
 /**
  * 获取 markdown 属性
  */
-function markdown() {
-    axios.get(`${window.cme.api}/rest/api/content/${window.cme.contentId}/property/markdown`)
+function markdown(contentId) {
+    if (!contentId) {
+        return;
+    }
+
+    axios.get(`${window.cme.api}/rest/api/content/${contentId}/property/markdown`)
         .then(res => {
             window.Editor.setMarkdown(res.data.value);
         })
@@ -93,75 +97,55 @@ function insertImageMarkdownToEditor(filename) {
 }
 
 /**
- * 更新文章属性：markdown
+ * 更新属性：markdown
  */
 function updateMarkdown(contentId) {
-    let markdown = window.Editor.getMarkdown();
+    return new Promise(resolve => {
 
-    let property = null;
+        let markdown = window.Editor.getMarkdown();
 
-    // 读取文章 Markdown 属性
-    axios.get(`${window.cme.api}/rest/api/content/${contentId}/property/markdown`)
-        .then(res => {
-            property = res.data;
-        })
-        // 如果文章属性不存在 markdown 属性，则创建一个
-        .catch(error => {
-            if (error.response.status !== 404) {
-                log("保存 Markdown 遇到未知错误", error.response);
-            }
+        let property = null;
 
-            axios.post(`${window.cme.api}/rest/api/content/${contentId}/property`, {
-                key: 'markdown',
-                value: markdown,
-            }).then(res => {
+        // 读取文章 Markdown 属性
+        axios.get(`${window.cme.api}/rest/api/content/${contentId}/property/markdown`)
+            .then(res => {
                 property = res.data;
-            }).catch(error => {
-                log('保存 Markdown 失败', error.response);
-            });
-        })
-        // 更新文章属性 markdown
-        .finally(() => {
-            if (property === null) {
-                return false;
-            }
-
-            axios.put(`${window.cme.api}/rest/api/content/${contentId}/property/markdown`, {
-                value: markdown,
-                version: {
-                    number: property.version.number + 1,
+            })
+            // 如果文章属性不存在 markdown 属性，则创建一个
+            .catch(async error => {
+                if (error.response.status !== 404) {
+                    log("保存 Markdown 遇到未知错误", error.response);
                 }
-            }).catch(error => {
-                log('更新 Markdown 失败', error.response);
+
+                await axios.post(`${window.cme.api}/rest/api/content/${contentId}/property`, {
+                    key: 'markdown',
+                    value: markdown,
+                }).then(res => {
+                    property = res.data;
+                }).catch(error => {
+                    log('保存 Markdown 失败', error.response);
+                });
+            })
+            // 更新文章属性 markdown
+            .finally(async () => {
+                if (property === null) {
+                    return false;
+                }
+
+                await axios.put(`${window.cme.api}/rest/api/content/${contentId}/property/markdown`, {
+                    value: markdown,
+                    version: {
+                        number: property.version.number + 1,
+                    }
+                }).catch(error => {
+                        log('更新 Markdown 失败', error.response);
+                    });
+
+                resolve(contentId);
             });
-        });
+    });
 }
 
-/**
- * 创建评论
- *
- * @param css
- */
-function createComment(css) {
-    let html = getHTML(css);
-
-    let body = getBody(html);
-
-    // 保存评论
-    axios.post(window.cme.api + `/rest/api/content`, body)
-        .then(res => {
-            msg('保存评论成功', true);
-            layui.layer.close(window.saveContentLayerIndex);
-        })
-        .then((a, b, c) => {
-            console.log(a, b, c);
-        })
-        .catch(error => {
-            log('保存评论失败', error.response.message)
-
-            return msg("保存评论失败");
-        });
-}
 
 /**
  * 更新文章
@@ -359,6 +343,7 @@ export {
     updateMarkdown,
     msg,
     log,
-    createComment,
     content,
+    getHTML,
+    getBody,
 }

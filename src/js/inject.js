@@ -24,7 +24,7 @@ const host = `${location.protocol}//${location.hostname}`;
             if (!hasCreatedButton) {
                 if (config.host === host) {
                     createContentEditorButton();
-                    createCommentEditorButton(true);
+                    createCommentEditorButton();
                     hasCreatedButton = true;
                 }
             }
@@ -67,8 +67,6 @@ function init(e) {
                     host: config.host,
                     api: config.api,
                     theme: result.theme,
-                    isPage: window.cme.isPage,
-                    isTopComment: window.cme.isTopComment,
                 };
 
                 e.source.postMessage(data, '*');
@@ -97,14 +95,13 @@ function createContentEditorButton() {
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector(`#${buttonId}`);
     button.addEventListener('click', function () {
-        window.cme = {isPage: true};
         window.open(extensionContentPageUrl);
     }, false);
 
 
 }
 
-function createCommentEditorButton(parentCommentId) {
+function createCommentEditorButton(parentCommentId = 0) {
     const buttonId = 'kkjofhv-confluence-markdown-editor-comment';
     const container = document.querySelector('div#navigation > ul.ajs-menu-bar');
     const a = `<div class="aui-button aui-button-primary" id="${buttonId}" style="color: #FFF;">评论</div>`;
@@ -113,15 +110,11 @@ function createCommentEditorButton(parentCommentId) {
     li.innerHTML = a;
     container.insertBefore(li, document.querySelector('#editPageLink').parentElement);
 
-    let extensionCommentPageUrl = chrome.runtime.getURL('pages/comment.html');
+    let extensionCommentPageUrl = chrome.runtime.getURL(`pages/comment.html?pid=${parentCommentId}`);
 
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector(`#${buttonId}`);
     button.addEventListener('click', function () {
-        window.cme = {
-            isPage: false,
-            parentCommentId: parentCommentId,
-        }
         window.open(extensionCommentPageUrl);
     }, false);
 }
