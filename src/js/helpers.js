@@ -137,8 +137,13 @@ function updateMarkdown(contentId) {
         });
 }
 
-function createComment() {
-    let html = getHTML();
+/**
+ * 创建评论
+ *
+ * @param css
+ */
+function createComment(css) {
+    let html = getHTML(css);
 
     let body = getBody(html);
 
@@ -147,6 +152,9 @@ function createComment() {
         .then(res => {
             msg('保存评论成功', true);
             layui.layer.close(window.saveContentLayerIndex);
+        })
+        .then((a, b, c) => {
+            console.log(a, b, c);
         })
         .catch(error => {
             log('保存评论失败', error.response.message)
@@ -227,7 +235,7 @@ function getBody(html) {
  *
  * @returns {any}
  */
-function getHTML() {
+function getHTML(css) {
     let html = window.Editor.getHTML();
 
     html = html.replaceAll('<img class="ProseMirror-separator">', '');
@@ -351,4 +359,6 @@ export {
     updateMarkdown,
     msg,
     log,
+    createComment,
+    content,
 }

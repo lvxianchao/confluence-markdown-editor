@@ -97,7 +97,7 @@ function createContentEditorButton() {
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector(`#${buttonId}`);
     button.addEventListener('click', function () {
-        window.cme.isPage = true;
+        window.cme = {isPage: true};
         window.open(extensionContentPageUrl);
     }, false);
 
@@ -118,8 +118,10 @@ function createCommentEditorButton(parentCommentId) {
     // 绑定点击事件，在新窗口中打开编辑器页面
     const button = document.querySelector(`#${buttonId}`);
     button.addEventListener('click', function () {
-        window.cme.isPage = false;
-        window.cme.parentCommentId = parentCommentId;
+        window.cme = {
+            isPage: false,
+            parentCommentId: parentCommentId,
+        }
         window.open(extensionCommentPageUrl);
     }, false);
 }
