@@ -76,13 +76,21 @@ function work() {
 
         // 读取主题
         axios.get(window.cme.theme ? window.cme.theme : '../themes/purple.css').then(res => {
-            // updateContent(res.data);
-            createComment(res.data);
-        }).then()
-            .catch(error => {
-                cme.log('读取主题失败', error);
-                cme.msg("读取主题失败");
-            }).finally(() => {
+            let css = res.data;
+
+            if (window.cme.commentId === 0) {
+                createComment(res.data);
+            }
+
+            if (window.cme.commentId) {
+                axios.get(`${window.cme.api}/rest/api/content/${window.cme.commentId}`).then(res => {
+                    updateComment(css, res.data.version.number + 1);
+                });
+            }
+        }).catch(error => {
+            cme.log('读取主题失败', error);
+            cme.msg("读取主题失败");
+        }).finally(() => {
             layui.layer.close(window.saveContentLayerIndex);
         });
     });
@@ -104,8 +112,7 @@ function createComment(css) {
             window.cme.commentId = res.data.id;
             cme.msg('保存评论成功', true);
             layui.layer.close(window.saveContentLayerIndex);
-        })
-        .then(() => {
+
             cme.updateMarkdown(window.cme.commentId).then(() => {
                 let url = location.href.split('?')[0];
                 let query = new URLSearchParams(location.search);
@@ -114,15 +121,39 @@ function createComment(css) {
             });
         })
         // .then(() => {
-        //
+        //     cme.updateMarkdown(window.cme.commentId).then(() => {
+        //         let url = location.href.split('?')[0];
+        //         let query = new URLSearchParams(location.search);
+        //         query.set('cid', window.cme.commentId);
+        //         location.href = url + '?' + query.toString();
+        //     });
         // })
         .catch(error => {
             cme.log('保存评论失败', error.response.message)
 
             return cme.msg("保存评论失败");
         });
+}
 
-    new URLSearchParams()
+/**
+ * 更新评论
+ *
+ * @param css 渲染样式
+ * @param number 评论内容 content 的新的版本号
+ */
+function updateComment(css, number) {
+    let html = cme.getHTML(css);
+
+    let body = getBody(html, number);
+
+    axios.put(`${window.cme.api}/rest/api/content/${window.cme.commentId}`, body).then(res => {
+        cme.updateMarkdown(window.cme.commentId).then(() => {
+            cme.msg('保存评论成功', true);
+        });
+    }).catch(error => {
+        cme.log('更新评论失败', error.response);
+        cme.msg('保存评论失败');
+    });
 }
 
 /**
@@ -130,19 +161,27 @@ function createComment(css) {
  *
  * @return
  */
-function getBody(html) {
+function getBody(html, number) {
     let body = {
-        type: "comment", container: {
-            id: window.cme.contentId, type: window.cme.parentCommentId ? "comment" : "page",
-        }, body: {
+        type: "comment",
+        container: {
+            id: window.cme.contentId,
+            type: window.cme.parentCommentId ? "comment" : "page",
+        },
+        body: {
             storage: {
-                representation: "storage", value: html,
+                representation: "storage",
+                value: html,
             }
         }
     };
 
     if (window.cme.parentCommentId) {
         body.ancestors = {id: window.cme.parentCommentId};
+    }
+
+    if (number) {
+        body.version = {number};
     }
 
     return body;
