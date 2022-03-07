@@ -26,7 +26,7 @@ const id = 'chrome-extension-confluence-markdown-editor';
 (async function () {
     let query = new URLSearchParams(location.search);
     let parentCommentId = query.get('pid') === null ? 0 : parseInt(query.get('pid'), 10);
-    let commentId = query.get('cid') === null ? 0 : query.get('cid');
+    let commentId = query.get('cid') === null ? 0 : parseInt(query.get('cid'), 10);
 
     window.opener.postMessage('init', '*');
     window.addEventListener('message', function (e) {
@@ -62,7 +62,9 @@ function work() {
     });
 
     // 获取内容详细信息
-    cme.content();
+    if (window.cme.contentId) {
+        cme.content();
+    }
 
     // 获取并向页面渲染用户信息
     cme.user();
@@ -120,14 +122,6 @@ function createComment(css) {
                 location.href = url + '?' + query.toString();
             });
         })
-        // .then(() => {
-        //     cme.updateMarkdown(window.cme.commentId).then(() => {
-        //         let url = location.href.split('?')[0];
-        //         let query = new URLSearchParams(location.search);
-        //         query.set('cid', window.cme.commentId);
-        //         location.href = url + '?' + query.toString();
-        //     });
-        // })
         .catch(error => {
             cme.log('保存评论失败', error.response.message)
 
@@ -177,7 +171,7 @@ function getBody(html, number) {
     };
 
     if (window.cme.parentCommentId) {
-        body.ancestors = {id: window.cme.parentCommentId};
+        body.ancestors = [{id: window.cme.parentCommentId}];
     }
 
     if (number) {

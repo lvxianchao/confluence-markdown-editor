@@ -133,6 +133,9 @@ function createCommentEditorButton(parentCommentId = 0) {
     }, false);
 }
 
+/**
+ * 创建评论的编辑和回复按钮
+ */
 function injectEditAndCommentButton() {
     document.querySelectorAll('.comment-thread').forEach(element => {
         let commentId = element.getAttribute('id').replace('comment-thread-', '');
