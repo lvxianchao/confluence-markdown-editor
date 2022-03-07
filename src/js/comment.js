@@ -1,20 +1,7 @@
 import $ from 'jquery';
-import {v4 as uuid} from 'uuid';
-import juice from "juice";
 import axios from "axios";
 import Editor from "@toast-ui/editor";
 import * as cme from "./helpers";
-// import {
-//     addImageBlobHook,
-//     user,
-//     markdown,
-//     updateContent,
-//     updateMarkdown,
-//     msg,
-//     log,
-//     content,
-//     getHTML
-// } from "./helpers"
 
 /**
  * 跨标签通信时的消息身份 ID
@@ -35,14 +22,7 @@ const id = 'chrome-extension-confluence-markdown-editor';
             window.cme.commentId = commentId;
             window.cme.parentCommentId = parentCommentId;
 
-            chrome.runtime.sendMessage({event: "getCookie", url: window.cme.host}, response => {
-                let cookie = response.cookie;
-                delete cookie.hostOnly;
-                delete cookie.session;
-                cookie.url = window.cme.host;
-                chrome.cookies.set(cookie);
-                work();
-            });
+            cme.setCookie(window.cme.host, work)
         }
     })
 })();

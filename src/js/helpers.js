@@ -3,6 +3,18 @@ import $ from "jquery";
 import juice from "juice";
 import {v4 as uuid} from "uuid";
 
+function setCookie(host, callback) {
+    chrome.runtime.sendMessage({event: "getCookie", url: host}, response => {
+            let cookie = response.cookie;
+            delete cookie.hostOnly;
+            delete cookie.session;
+            cookie.url = host;
+            chrome.cookies.set(cookie);
+            callback();
+        }
+    );
+}
+
 /**
  * 编辑器上传图片 HOOK
  *
@@ -59,7 +71,6 @@ function content(isPage = false) {
 
         if (isPage) {
             $('#title').val(res.data.title);
-            $('#version').val(res.data.version.number + 1);
         }
     });
 }
@@ -138,80 +149,12 @@ function updateMarkdown(contentId) {
                         number: property.version.number + 1,
                     }
                 }).catch(error => {
-                        log('更新 Markdown 失败', error.response);
-                    });
+                    log('更新 Markdown 失败', error.response);
+                });
 
                 resolve(contentId);
             });
     });
-}
-
-
-/**
- * 更新文章
- */
-function updateContent() {
-    let html = getHTML();
-
-    let body = getBody(html);
-
-    // 保存文章
-    axios.put(window.cme.api + `/rest/api/content/${window.cme.contentId}`, body)
-        .then(res => {
-            msg('保存成功', true);
-            $('#version').val(res.data.version.number + 1);
-            layui.layer.close(window.saveContentLayerIndex);
-        })
-        .catch(error => {
-            log('保存文章失败', error.response.message)
-
-            return msg(error.response.message);
-        });
-}
-
-/**
- * 生成请求 body
- *
- * @param html
- */
-function getBody(html) {
-    let body = {};
-
-    if (window.cme.isPage) {
-        body = {
-            version: {
-                number: $('#version').val(),
-            },
-            title: $('#title').val(),
-            type: 'page',
-            body: {
-                storage: {
-                    representation: 'storage',
-                    value: html,
-                }
-            }
-        };
-    } else {
-        body = {
-            type: "comment",
-            container: {
-                id: window.cme.contentId,
-                type: window.cme.parentCommentId ? "comment" : "page",
-            },
-            body: {
-                storage: {
-                    representation: "storage",
-                    value: html,
-                }
-            }
-        };
-
-        if (window.cme.parentCommentId) {
-            body.ancestors = {id: window.cme.parentCommentId};
-        }
-    }
-
-    return body;
 }
 
 /**
@@ -336,14 +279,13 @@ function msg(message, success = false) {
 }
 
 export {
+    setCookie,
     user,
     markdown,
     addImageBlobHook,
-    updateContent,
     updateMarkdown,
     msg,
     log,
     content,
     getHTML,
-    getBody,
 }
