@@ -20,7 +20,7 @@
 
 > 插件在安装完成后，会自动打开配置页面，输入相关配置后点击保存按钮保存配置信息。
 
-![options](https://user-images.githubusercontent.com/22412818/149041564-c3d3f692-4abe-4653-9f99-0ffdf5577151.png)
+![image](https://user-images.githubusercontent.com/22412818/156962426-960ae57c-476e-4b3c-a2c5-57b377456e33.png)
 
 ### 作用域
 
@@ -56,15 +56,24 @@ Markdown 渲染主题其实就是你所写的 Markdown 渲染到 wiki 页面上�
 
 ## 使用
 
-找到你要编辑的文章，点击右上侧编辑工具栏出现的 `Markdown` 字样的按钮（如果没有请刷新页面）则会在新的标签中打开一个编辑器，在这个编辑器里输入你的 Markdown 内容。
+### 正文
+
+![image](https://user-images.githubusercontent.com/22412818/156962838-c34388c8-6b12-4cc9-b4be-58105bd06bb8.png)
+
+找到你要编辑的文章，点击右上侧编辑工具栏出现的 `正文` 字样的按钮（如果没有请刷新页面）则会在新的标签中打开一个编辑器，在这个编辑器里输入你的 Markdown 内容。
 
 输入完成后点击右上方`保存`按钮，回到 wiki 的页面上刷新可以查看效果。
-
-![image](https://user-images.githubusercontent.com/22412818/148865165-8dec60d4-5e4a-4cff-83f3-da2ec6c06a52.png)
 
 > 注意:
 >
 > 如果你打算 **新建一篇文章**，则需要点击创建以后，在新的文章页面点击保存，通常浏览器会自动跳转回你的新文章的预览界面，此时再点击此插件提供的 `Markdown` 按钮才能正常工作。
+
+### 评论
+
+* 点击 `评论` 按钮即可添加评论。
+* 在原文的评论按钮后面，点击 `【回复】` 和 `【编辑】` 按钮，即可使用编辑器书写 Markdown。
+
+![image](https://user-images.githubusercontent.com/22412818/156968897-8578857e-735b-4631-9734-9b2cd01c1c3a.png)
 
 ## 参与开发
 
