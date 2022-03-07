@@ -71,6 +71,7 @@ function content(isPage = false) {
 
         if (isPage) {
             $('#title').val(res.data.title);
+            $('#version').val(res.data.version.number);
         }
     });
 }

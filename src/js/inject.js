@@ -93,7 +93,7 @@ function init(e) {
 function createContentEditorButton() {
     const buttonId = 'kkjofhv-confluence-markdown-editor-content';
     const container = document.querySelector('div#navigation > ul.ajs-menu-bar');
-    const a = `<div class="aui-button aui-button-primary" id="${buttonId}" style="color: #FFF;">正文</div>`;
+    const a = `<div class="aui-button aui-button-primary" id="${buttonId}" style="color: #FFF;">编辑</div>`;
     const li = document.createElement('li');
     li.setAttribute('class', 'ajs-button normal');
     li.innerHTML = a;

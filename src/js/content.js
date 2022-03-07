@@ -69,10 +69,12 @@ function updateContent(css) {
     let body = getBody(html);
 
     axios.put(window.cme.api + `/rest/api/content/${window.cme.contentId}`, body).then(res => {
+        $('#version').val(res.data.version.number);
+
         cme.updateMarkdown(window.cme.contentId).then(() => {
             cme.msg('保存成功', true);
         });
-        // $('#version').val(res.data.version.number);
+
         layui.layer.close(window.saveContentLayerIndex);
     }).catch(error => {
         cme.log('保存文章失败', error.response.message)
@@ -89,7 +91,7 @@ function updateContent(css) {
 function getBody(html) {
     return {
         version: {
-            number: window.cme.content.version.number + 1,
+            number: parseInt($('#version').val()) + 1,
         },
         title: $('#title').val(),
         type: 'page',
