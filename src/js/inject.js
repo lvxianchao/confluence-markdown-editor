@@ -21,13 +21,22 @@ const host = `${location.protocol}//${location.hostname}`;
 
         let hasCreatedButton = false;
         result.config.forEach(config => {
-            if (!hasCreatedButton) {
-                if (config.host === host) {
-                    createContentEditorButton();
-                    createCommentEditorButton();
-                    hasCreatedButton = true;
-                }
+            if (config.host !== host) {
+                return false;
             }
+
+            if (!hasCreatedButton) {
+                // 注入编写文章按钮
+                createContentEditorButton();
+                // 注入顶级评论和
+                createCommentEditorButton();
+                // 注入评论的编辑和回复按钮
+                injectEditAndCommentButton();
+
+                hasCreatedButton = true;
+            }
+
+
         });
     });
 })();
@@ -101,6 +110,11 @@ function createContentEditorButton() {
 
 }
 
+/**
+ * 创建顶级评论按钮
+ *
+ * @param parentCommentId
+ */
 function createCommentEditorButton(parentCommentId = 0) {
     const buttonId = 'kkjofhv-confluence-markdown-editor-comment';
     const container = document.querySelector('div#navigation > ul.ajs-menu-bar');
@@ -117,4 +131,24 @@ function createCommentEditorButton(parentCommentId = 0) {
     button.addEventListener('click', function () {
         window.open(extensionCommentPageUrl);
     }, false);
+}
+
+function injectEditAndCommentButton() {
+    document.querySelectorAll('.comment-thread').forEach(element => {
+        let commentId = element.getAttribute('id').replace('comment-thread-', '');
+
+        // 回复按钮
+        let commentPageUrl = chrome.runtime.getURL(`pages/comment.html?pid=${commentId}&cid=0`);
+        let a = `<a href="javascript: window.open('${commentPageUrl}');">【回复】</a>`;
+        let li = document.createElement('li');
+        li.innerHTML = a;
+        element.querySelector('.comment-actions-primary').append(li);
+
+        // 编辑按钮
+        commentPageUrl = chrome.runtime.getURL(`pages/comment.html?pid=0&cid=${commentId}`);
+        a = `<a href="javascript: window.open('${commentPageUrl}');">【编辑】</a>`
+        li = document.createElement('li');
+        li.innerHTML = a;
+        element.querySelector('.comment-actions-primary').append(li);
+    });
 }
