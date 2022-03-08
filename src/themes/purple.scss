@@ -47,10 +47,6 @@ $monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, De
     word-spacing: 0.1rem !important;
   }
 
-  p:not(.title), blockquote, ul, ol, dl, table {
-    margin: 0.8em 0 !important;
-  }
-
   a {
     color: $link-color !important;
     text-decoration: none !important;
