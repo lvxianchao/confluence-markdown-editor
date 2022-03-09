@@ -2,6 +2,7 @@ import $ from 'jquery';
 import axios from "axios";
 import Editor from "@toast-ui/editor";
 import * as cme from "./helpers";
+import "@toast-ui/editor/dist/i18n/zh-cn";
 
 /**
  * 跨标签通信时的消息身份 ID
@@ -32,6 +33,7 @@ function work() {
         previewStyle: 'vertical',
         usageStatistics: false,
         hideModeSwitch: true,
+        language: 'zh-CN',
         hooks: {addImageBlobHook: cme.addImageBlobHook},
     });
 
