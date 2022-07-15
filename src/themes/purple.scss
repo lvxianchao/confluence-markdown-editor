@@ -140,10 +140,10 @@ $monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, De
     padding-left: 1em !important;
     color: $light-text-color !important;
     font-family: $base-font !important;
-    //border-left: 0.3em solid $border-quote important;
     border-left-width: 0.3em !important;
     border-left-style: solid !important;
     border-left-color: $border-quote !important;
+    margin-left: 0 !important;
   }
 
   table {
