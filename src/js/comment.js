@@ -3,6 +3,11 @@ import axios from "axios";
 import Editor from "@toast-ui/editor";
 import * as cme from "./helpers";
 import "@toast-ui/editor/dist/i18n/zh-cn";
+import 'prismjs/themes/prism.css';
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
+import codeSyntaxHighlight
+    from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
+
 
 /**
  * 跨标签通信时的消息身份 ID
@@ -41,6 +46,7 @@ function work() {
         hideModeSwitch: true,
         language: 'zh-CN',
         hooks: {addImageBlobHook: cme.addImageBlobHook},
+        plugins: [codeSyntaxHighlight],
     });
 
     // 获取内容详细信息
