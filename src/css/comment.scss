@@ -21,3 +21,9 @@ form {
   padding: 10px;
   height: calc(100vh - 80px);
 }
+
+.ProseMirror, .toastui-editor-contents, .toastui-editor-contents * {
+  font-size: 16px;
+  line-height: 2 !important;
+  font-family: "Meiryo UI", "Microsoft YaHei", "Malgun Gothic", "Segoe UI", "Trebuchet MS", Helvetica, Monaco, monospace, Tahoma, STXihei, 华文细黑, STHeiti, "Helvetica Neue", "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, 宋体, Heiti, 黑体, sans-serif;
+}
