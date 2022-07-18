@@ -7,7 +7,7 @@ import 'prismjs/themes/prism.css';
 import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
 import codeSyntaxHighlight
     from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
-import {bindSaveEventAndShortcut} from "./helpers";
+import {bindSaveEventAndShortcut, checkUpgrade} from "./helpers";
 
 /**
  * 跨标签通信时的消息身份 ID
@@ -53,7 +53,11 @@ function work() {
     // 文章 Markdown 原文
     cme.markdown(window.cme.contentId);
 
+    // 保存事件和其快捷键
     bindSaveEventAndShortcut(save);
+
+    // 检查更新
+    checkUpgrade();
 }
 
 /**
