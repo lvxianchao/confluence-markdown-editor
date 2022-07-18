@@ -1,0 +1,9 @@
+$fonts-path: "../fonts/JetBrainsMono";
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url($fonts-path + "/ttf/JetBrainsMono-Medium.ttf") format("truetype");
+  src: url($fonts-path + "/webfonts/JetBrainsMono-Medium.woff2") format("woff2");
+}

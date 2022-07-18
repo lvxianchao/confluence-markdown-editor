@@ -1,5 +1,4 @@
 let mix = require('laravel-mix');
-const {copy, sass} = require("laravel-mix");
 
 mix.setPublicPath('dist');
 
