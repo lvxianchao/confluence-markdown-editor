@@ -308,6 +308,46 @@ function bindSaveEventAndShortcut(callback) {
     });
 }
 
+/**
+ * 版本升级检查
+ */
+function checkUpgrade() {
+    $('#btn-check-upgrade').on('click', function () {
+        let refreshIconClass = 'layui-icon-refresh';
+        let loadingIconClass = 'layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop';
+
+        $(this).children('i').removeClass(refreshIconClass).addClass(loadingIconClass);
+
+        axios.get("https://api.github.com/repos/lvxianchao/confluence-markdown-editor/tags?per_page=1")
+            .then(res => {
+                let currentVersion = chrome.runtime.getManifest().version;
+                let latestVersion = res.data[0].name.replace('v', '');
+                if (currentVersion !== latestVersion) {
+                    let content = `
+                        <p style="color: #FF5722;">当前版本: ${currentVersion}</p>
+                        <p style="color: #5FB878;">最新版本: ${latestVersion}</p>
+                        <p class="text-muted">(Chrome 网上应用商店安装方式的版本升级因需要审核要晚于 Github 发布时间，属于正常现象。)</p>
+                    `;
+                    layer.open({
+                        title: "版本检查",
+                        content: content,
+                        btnAlign: 'c',
+                        offset: 'auto',
+                    });
+                } else {
+                    msg(`当前已是最新版本: ${currentVersion}`);
+                }
+            })
+            .catch(e => {
+                msg('查询最新版本失败');
+                console.error(e.message);
+            })
+            .finally(() => {
+                $(this).children('i').removeClass(loadingIconClass).addClass(refreshIconClass);
+            });
+    });
+}
+
 export {
     setCookie,
     user,
@@ -319,4 +359,5 @@ export {
     content,
     getHTML,
     bindSaveEventAndShortcut,
+    checkUpgrade,
 }
