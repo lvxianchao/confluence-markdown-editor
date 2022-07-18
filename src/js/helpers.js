@@ -279,6 +279,35 @@ function msg(message, success = false) {
     layui.layer.msg(message, {icon: success ? 6 : 5});
 }
 
+/**
+ * 判断当前操作系统是否 Mac
+ * @returns {boolean}
+ */
+function isMac() {
+    return /macintosh|mac os x/i.test(navigator.userAgent);
+}
+
+/**
+ * 绑定保存事件和其快捷键
+ *
+ * @param callback 保存事件
+ */
+function bindSaveEventAndShortcut(callback) {
+    // 点击保存按钮
+    $('#save').on('click', function () {
+        callback();
+    });
+
+    // 保存快捷键
+    $(window).keydown(function (e) {
+        let ctrlKey = isMac() ? e.metaKey : e.ctrlKey
+        if (e.keyCode === 83 && ctrlKey) {
+            callback();
+            e.preventDefault();
+        }
+    });
+}
+
 export {
     setCookie,
     user,
@@ -289,4 +318,5 @@ export {
     log,
     content,
     getHTML,
+    bindSaveEventAndShortcut,
 }

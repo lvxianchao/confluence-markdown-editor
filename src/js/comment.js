@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import axios from "axios";
 import Editor from "@toast-ui/editor";
 import * as cme from "./helpers";
@@ -7,6 +6,7 @@ import 'prismjs/themes/prism.css';
 import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
 import codeSyntaxHighlight
     from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
+import {bindSaveEventAndShortcut} from "./helpers";
 
 
 /**
@@ -47,6 +47,7 @@ function work() {
         language: 'zh-CN',
         hooks: {addImageBlobHook: cme.addImageBlobHook},
         plugins: [codeSyntaxHighlight],
+        useCommandShortcut: false,
     });
 
     // 获取内容详细信息
@@ -60,29 +61,31 @@ function work() {
     // 获取 Markdown 原文
     cme.markdown(window.cme.commentId);
 
-    // 保存
-    $('#save').on('click', function () {
-        window.saveContentLayerIndex = layui.layer.load(1);
+    // 保存事件和其快捷键
+    bindSaveEventAndShortcut(save);
+}
 
-        // 读取主题
-        axios.get(window.cme.theme ? window.cme.theme : '../themes/purple.css').then(res => {
-            let css = res.data;
+function save() {
+    window.saveContentLayerIndex = layui.layer.load(1);
 
-            if (window.cme.commentId === 0) {
-                createComment(res.data);
-            }
+    // 读取主题
+    axios.get(window.cme.theme ? window.cme.theme : '../themes/purple.css').then(res => {
+        let css = res.data;
 
-            if (window.cme.commentId) {
-                axios.get(`${window.cme.api}/rest/api/content/${window.cme.commentId}`).then(res => {
-                    updateComment(css, res.data.version.number + 1);
-                });
-            }
-        }).catch(error => {
-            cme.log('读取主题失败', error);
-            cme.msg("读取主题失败");
-        }).finally(() => {
-            layui.layer.close(window.saveContentLayerIndex);
-        });
+        if (window.cme.commentId === 0) {
+            createComment(res.data);
+        }
+
+        if (window.cme.commentId) {
+            axios.get(`${window.cme.api}/rest/api/content/${window.cme.commentId}`).then(res => {
+                updateComment(css, res.data.version.number + 1);
+            });
+        }
+    }).catch(error => {
+        cme.log('读取主题失败', error);
+        cme.msg("读取主题失败");
+    }).finally(() => {
+        layui.layer.close(window.saveContentLayerIndex);
     });
 }
 

@@ -39,11 +39,6 @@
             ]
         }
     ],
-    "sandbox": {
-        "pages": [
-
-        ]
-    },
     "background": {
         "service_worker": "js/background.js"
     }
