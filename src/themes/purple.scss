@@ -17,9 +17,9 @@ $active-file-text-color: $title-color;
 $active-file-bg-color: #eee;
 $item-hover-bg-color: #eee;
 $active-file-border-color: #8064a9;
-$base-font: Monaco, JetBrains Mono, PingFang SC, Microsoft YaHei, Source Sans Pro, Helvetica Neue, sans-serif;
-$title-font: Monaco, JetBrains Mono, Microsoft YaHei, PingFang SC, Helvetica Neue, EB Garamond, Georgia, Source Sans Pro, serif;
-$monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, Deja Vu Sans Mono, Consolas, Lucida Console, Andale Mono, Roboto Mono, Courier, Monospace, serif;
+$base-font: JetBrains Mono, Monaco, PingFang SC, Microsoft YaHei, Source Sans Pro, Helvetica Neue, sans-serif;
+$title-font: JetBrains Mono, Monaco, Microsoft YaHei, PingFang SC, Helvetica Neue, EB Garamond, Georgia, Source Sans Pro, serif;
+$monospace: JetBrains Mono, Monaco, Fira Code, Cascadia Code, Sarasa Term SC, Deja Vu Sans Mono, Consolas, Lucida Console, Andale Mono, Roboto Mono, Courier, Monospace, serif;
 
 .confluence-markdown-editor-content {
   text-rendering: optimizelegibility !important;
@@ -30,9 +30,9 @@ $monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, De
   color: $text-color !important;
   letter-spacing: 0 !important;
   overflow-x: hidden !important;
-  font-size: 16px !important;
+  font-size: 17px !important;
   word-spacing: 0.1rem !important;
-  line-height: 1.6 !important;
+  line-height: 2.5 !important;
 
   *:first-child {
     margin-top: 0 !important;
@@ -86,7 +86,7 @@ $monospace: Monaco, JetBrains Mono, Fira Code, Cascadia Code, Sarasa Term SC, De
   h2 {
     padding-left: 0.4em !important;
     font-size: 1.75em !important;
-    border-left: 0.4em solid $title-color !important;
+    border-left: 6px solid $title-color !important;
     border-bottom: 1px solid $title-color !important;
   }
 
