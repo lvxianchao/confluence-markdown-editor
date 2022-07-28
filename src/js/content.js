@@ -41,7 +41,6 @@ function work() {
         language: 'zh-CN',
         hooks: {addImageBlobHook: cme.addImageBlobHook},
         plugins: [codeSyntaxHighlight],
-        useCommandShortcut: false,
     });
 
     // 向页面渲染用户信息

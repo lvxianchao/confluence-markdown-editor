@@ -299,11 +299,10 @@ function bindSaveEventAndShortcut(callback) {
     });
 
     // 保存快捷键
-    $(window).keydown(function (e) {
-        let ctrlKey = isMac() ? e.metaKey : e.ctrlKey
+    $(document).on('keyup', function (e) {
+        let ctrlKey = isMac() ? e.metaKey : e.altKey
         if (e.keyCode === 83 && ctrlKey) {
             callback();
-            e.preventDefault();
         }
     });
 }
@@ -335,7 +334,7 @@ function checkUpgrade() {
                         offset: 'auto',
                     });
                 } else {
-                    msg(`当前已是最新版本: ${currentVersion}`);
+                    msg(`当前已是最新版本: ${currentVersion}`, true);
                 }
             })
             .catch(e => {

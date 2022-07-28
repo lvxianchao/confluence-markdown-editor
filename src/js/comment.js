@@ -47,7 +47,6 @@ function work() {
         language: 'zh-CN',
         hooks: {addImageBlobHook: cme.addImageBlobHook},
         plugins: [codeSyntaxHighlight],
-        useCommandShortcut: false,
     });
 
     // 获取内容详细信息
