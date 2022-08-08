@@ -43,8 +43,9 @@ $monospace: JetBrains Mono, Monaco, Fira Code, Cascadia Code, Sarasa Term SC, De
   }
 
   p {
-    line-height: 1.6 !important;
+    line-height: 1.8 !important;
     word-spacing: 0.1rem !important;
+    font-size: 17px !important;
   }
 
   a {
@@ -100,6 +101,10 @@ $monospace: JetBrains Mono, Monaco, Fira Code, Cascadia Code, Sarasa Term SC, De
 
   h4 {
     font-size: 1.3em !important;
+  }
+
+  h5 {
+    font-size: 1.2em !important;
   }
 
   h6 {
