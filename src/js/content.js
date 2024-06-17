@@ -59,11 +59,8 @@ function work(space, type, id) {
     // 文章详细信息（标题 + 版本号）
     cme.content(space, type, id);
 
-    console.log("===== die =====");
-    return;
-
     // 文章 Markdown 原文
-    cme.markdown(window.cme.contentId);
+    cme.markdown(id);
 
     // 保存事件和其快捷键
     bindSaveEventAndShortcut(save);
@@ -76,10 +73,12 @@ function work(space, type, id) {
  * 保存
  */
 function save() {
+    console.log("saved");
     window.saveContentLayerIndex = layui.layer.load(1);
 
     // 读取主题
     axios.get(window.cme.theme ? window.cme.theme : '../themes/purple.css').then(res => {
+        console.log('读取主题成功', res.data);
         updateContent(res.data);
     }).catch(error => {
         cme.log('读取主题失败', error);
