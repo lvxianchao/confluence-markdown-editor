@@ -1,7 +1,9 @@
 const id = 'chrome-extension-confluence-markdown-editor';
-const host = `${location.protocol}//${location.hostname}`;
+const space = location.hostname.replace('.atlassian.net', '');
+console.log("space: ", space);
 
 (function () {
+    console.log("inject===================================");
     window.addEventListener('message', function (e) {
         try {
             if (e.data === 'init') {
@@ -15,13 +17,14 @@ const host = `${location.protocol}//${location.hostname}`;
 
     // 如果当前域名在配置里，则注入编辑器按钮
     chrome.storage.sync.get(['config'], (result) => {
+        console.log("inject result: ", result);
         if (!result.config) {
             return false;
         }
 
         let hasCreatedButton = false;
         result.config.forEach(config => {
-            if (config.host !== host) {
+            if (config.space !== space) {
                 return false;
             }
 
@@ -29,14 +32,12 @@ const host = `${location.protocol}//${location.hostname}`;
                 // 注入编写文章按钮
                 createContentEditorButton();
                 // 注入顶级评论和
-                createCommentEditorButton();
+                // createCommentEditorButton();
                 // 注入评论的编辑和回复按钮
-                injectEditAndCommentButton();
+                // injectEditAndCommentButton();
 
                 hasCreatedButton = true;
             }
-
-
         });
     });
 })();
@@ -91,23 +92,20 @@ function init(e) {
  * @returns {boolean}
  */
 function createContentEditorButton() {
-    const buttonId = 'kkjofhv-confluence-markdown-editor-content';
-    const container = document.querySelector('div#navigation > ul.ajs-menu-bar');
-    const a = `<div class="aui-button aui-button-primary" id="${buttonId}" style="color: #FFF;">编辑</div>`;
-    const li = document.createElement('li');
-    li.setAttribute('class', 'ajs-button normal');
-    li.innerHTML = a;
-    container.insertBefore(li, document.querySelector('#navigation li'));
-
     let extensionContentPageUrl = chrome.runtime.getURL('pages/content.html');
+    const paths = location.pathname.split("/");
+    const type = paths[4];
+    const id = paths[5];
+    extensionContentPageUrl  += `?type=${type}&id=${id}`;
 
-    // 绑定点击事件，在新窗口中打开编辑器页面
-    const button = document.querySelector(`#${buttonId}`);
-    button.addEventListener('click', function () {
-        window.open(extensionContentPageUrl);
-    }, false);
+    const buttonId = 'kkjofhv-confluence-markdown-editor-content';
+    const container = document.querySelector('span[data-test-id="content-buttons"]');
+    const a = `<a class="aui-button aui-button-primary" target="_blank" id="${buttonId}" href="${extensionContentPageUrl}" style="color: #FFF;">编辑</a>`;
+    const div = document.createElement('div');
+    div.setAttribute('class', 'ajs-button normal');
+    div.innerHTML = a;
 
-
+    container.insertBefore(div, document.querySelector('span[data-test-id="content-buttons"] > div'));
 }
 
 /**

@@ -4,10 +4,13 @@ import $ from 'jquery';
 const dom = $(`
         <tr>
             <td>
-                <input type="text" class="layui-input" name="hosts[]" lay-verify="required|url">
+                <input type="text" class="layui-input" name="spaces[]" lay-verify="required">
             </td>
             <td>
-                <input type="text" class="layui-input" name="apis[]" lay-verify="required|url">
+                <input type="text" class="layui-input" name="emails[]" lay-verify="required|email">
+            </td>
+            <td>
+                <input type="text" class="layui-input" name="tokens[]" lay-verify="required">
             </td>
             <td>
                 <div class="layui-btn layui-btn-danger w-100 delete-btn">删除</div>
@@ -28,11 +31,6 @@ $(function () {
         $('tbody').append(dom.clone(true));
     })
 
-    // 是否使用附件容器
-    form.on('switch(attachment_container_enable)', function (data) {
-        useAttachmentContainer(data.elem.checked);
-    });
-
     // 保存配置
     form.on('submit', function () {
         let val = form.val('config');
@@ -41,8 +39,9 @@ $(function () {
         let config = [];
         $('#config-table > tbody > tr').each(function () {
             config.push({
-                host: $(this).find('input:eq(0)').val().trim('/'),
-                api: $(this).find('input:eq(1)').val().trim('/'),
+                space: $(this).find('input:eq(0)').val().trim(),
+                email: $(this).find('input:eq(1)').val().trim(),
+                token: $(this).find('input:eq(2)').val().trim(),
             });
         });
 
@@ -74,7 +73,7 @@ $(function () {
         // 作用域
         configConfigRender(result.config);
         // 附件
-        attachmentConfigRender(result.attachment);
+        // attachmentConfigRender(result.attachment);
         // 主题
         themeConfigRender(result.theme);
     });
@@ -144,8 +143,9 @@ function configConfigRender(config) {
         config.forEach(function (config) {
             let clone = dom.clone(true);
 
-            clone.find('input').eq(0).val(config.host);
-            clone.find('input').eq(1).val(config.api);
+            clone.find('input').eq(0).val(config.space);
+            clone.find('input').eq(1).val(config.email);
+            clone.find('input').eq(2).val(config.token);
 
             $('tbody').append(clone);
         });
