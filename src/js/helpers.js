@@ -61,15 +61,15 @@ function user() {
 /**
  * 获取文章信息
  */
-function content(isPage = false) {
-    axios.get(`${window.cme.api}/rest/api/content/${window.cme.contentId}`, {
+function content(space, type, id) {
+    axios.get(`https://${space}.atlassian.net/wiki/api/v2/${type}/${id}`, {
         params: {
-            expand: 'body.storage,version',
+            'body-format': 'view',
         }
     }).then(res => {
-        window.cme.content = res.data;
+        // window.cme.content = res.data;
 
-        if (isPage) {
+        if (type === 'pages') {
             $('#title').val(res.data.title);
             $('#version').val(res.data.version.number);
         }

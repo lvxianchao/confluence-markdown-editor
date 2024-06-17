@@ -16,21 +16,31 @@ import {bindSaveEventAndShortcut, checkUpgrade} from "./helpers";
  */
 const id = 'chrome-extension-confluence-markdown-editor';
 
-(async function () {
-    window.opener.postMessage('init', '*');
-    window.addEventListener('message', function (e) {
-        if (e.data instanceof Object && e.data.id && e.data.id === id) {
-            window.cme = e.data;
+// (async function () {
+//     window.opener.postMessage('init', '*');
+//     window.addEventListener('message', function (e) {
+//         if (e.data instanceof Object && e.data.id && e.data.id === id) {
+//             window.cme = e.data;
+//
+//             cme.setCookie(window.cme.host, work);
+//         }
+//     })
+// })();
 
-            cme.setCookie(window.cme.host, work);
-        }
-    })
+(function () {
+    const params = new URLSearchParams(location.search);
+    const space = params.get('space');
+    const type = params.get('type');
+    const id = params.get('id');
+
+    console.log("type, id: ", type, id)
+    work(space, type, id);
 })();
 
 /**
  * 初始化编辑器及其他工作
  */
-function work() {
+function work(space, type, id) {
     window.Editor = new Editor({
         el: document.querySelector('#editor'),
         height: $('form').height() - 56 + 'px',
@@ -44,10 +54,13 @@ function work() {
     });
 
     // 向页面渲染用户信息
-    cme.user();
+    // cme.user();
 
     // 文章详细信息（标题 + 版本号）
-    cme.content(true);
+    cme.content(space, type, id);
+
+    console.log("===== die =====");
+    return;
 
     // 文章 Markdown 原文
     cme.markdown(window.cme.contentId);

@@ -1,9 +1,7 @@
 const id = 'chrome-extension-confluence-markdown-editor';
 const space = location.hostname.replace('.atlassian.net', '');
-console.log("space: ", space);
 
 (function () {
-    console.log("inject===================================");
     window.addEventListener('message', function (e) {
         try {
             if (e.data === 'init') {
@@ -96,7 +94,7 @@ function createContentEditorButton() {
     const paths = location.pathname.split("/");
     const type = paths[4];
     const id = paths[5];
-    extensionContentPageUrl  += `?type=${type}&id=${id}`;
+    extensionContentPageUrl  += `?space=${space}&type=${type}&id=${id}`;
 
     const buttonId = 'kkjofhv-confluence-markdown-editor-content';
     const container = document.querySelector('span[data-test-id="content-buttons"]');
